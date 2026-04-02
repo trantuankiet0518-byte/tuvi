@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-tint": "#ffb95f",
+              "on-surface-variant": "#d8c3ad",
+              "error": "#ffb4ab",
+              "tertiary": "#ffc08e",
+              "tertiary-container": "#ff9837",
+              "primary-fixed-dim": "#ffb95f",
+              "tertiary-fixed": "#ffdcc3",
+              "error-container": "#93000a",
+              "on-tertiary-fixed": "#2f1500",
+              "primary": "#ffc174",
+              "surface-container-high": "#222a3d",
+              "surface-container": "#171f33",
+              "inverse-on-surface": "#283044",
+              "on-tertiary-fixed-variant": "#6e3900",
+              "on-surface": "#dae2fd",
+              "secondary-fixed-dim": "#b9c8de",
+              "surface-dim": "#0b1326",
+              "surface-container-highest": "#2d3449",
+              "secondary-fixed": "#d4e4fa",
+              "outline": "#a08e7a",
+              "on-primary-fixed-variant": "#653e00",
+              "on-secondary-fixed-variant": "#39485a",
+              "on-tertiary-container": "#6a3700",
+              "surface-variant": "#2d3449",
+              "background": "#0b1326",
+              "on-secondary-container": "#a7b6cc",
+              "inverse-primary": "#855300",
+              "on-secondary": "#233143",
+              "secondary-container": "#39485a",
+              "surface-bright": "#31394d",
+              "on-primary-container": "#613b00",
+              "on-background": "#dae2fd",
+              "on-primary": "#472a00",
+              "tertiary-fixed-dim": "#ffb77d",
+              "primary-fixed": "#ffddb8",
+              "on-error": "#690005",
+              "on-error-container": "#ffdad6",
+              "surface": "#0b1326",
+              "on-secondary-fixed": "#0d1c2d",
+              "on-tertiary": "#4d2600",
+              "surface-container-lowest": "#060e20",
+              "on-primary-fixed": "#2a1700",
+              "surface-container-low": "#131b2e",
+              "primary-container": "#f59e0b",
+              "outline-variant": "#534434",
+              "inverse-surface": "#dae2fd",
+              "secondary": "#b9c8de"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        background-color: #0b1326;
+        font-family: 'Inter', sans-serif;
+      }
+      .alchemist-gradient {
+        background: linear-gradient(135deg, #ffc174 0%, #f59e0b 100%);
+      }
+      .glass-card {
+        background-color: rgba(23, 31, 51, 0.7);
+        backdrop-filter: blur(20px);
+      }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary selection:text-on-primary">
+<nav class="fixed top-0 w-full z-50 bg-[#0b1326]/70 backdrop-blur-xl shadow-[0_32px_32px_rgba(218,226,253,0.06)] flex justify-between items-center px-6 py-4 max-w-full">
+<div class="text-xl font-bold tracking-tighter text-[#ffc174] font-['Inter'] antialiased tracking-tight">Tử Vi Đẩu Số</div>
+<div class="hidden md:flex gap-8 text-[#dae2fd] opacity-70 font-['Inter'] antialiased tracking-tight">
+<a class="hover:text-[#ffc174] hover:opacity-100 transition-all active:scale-95 duration-200" href="#">Explore</a>
+<a class="hover:text-[#ffc174] hover:opacity-100 transition-all active:scale-95 duration-200" href="#">Interpretations</a>
+<a class="hover:text-[#ffc174] hover:opacity-100 transition-all active:scale-95 duration-200" href="#">Archive</a>
+</div>
+<button class="bg-primary-container text-on-primary px-4 py-2 rounded-xl text-sm font-semibold active:scale-95 duration-200">Sign In</button>
+</nav>
+<main class="min-h-screen flex items-center justify-center pt-20 pb-12 px-4 relative overflow-hidden">
+<div class="absolute inset-0 pointer-events-none">
+<div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-tertiary/5 rounded-full blur-[120px]"></div>
+</div>
+<div class="w-full max-w-md z-10">
+<div class="glass-card border border-outline-variant/15 p-8 md:p-10 rounded-xl shadow-2xl">
+<div class="text-center mb-8">
+<h1 class="text-display-md text-3xl font-bold tracking-tighter text-on-surface mb-2">Create your celestial profile</h1>
+<p class="text-body-md text-on-surface-variant opacity-80">Chart your destiny with the ancient wisdom of Tử Vi.</p>
+</div>
+<form class="space-y-5">
+<div class="space-y-2">
+<label class="text-label-sm uppercase tracking-[0.05em] text-on-surface-variant/70 block px-1">Full Name</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-lg">person</span>
+<input class="w-full bg-surface-container-lowest border border-transparent focus:border-primary/40 focus:ring-0 rounded-lg py-3 pl-11 pr-4 text-on-surface placeholder:text-on-surface-variant/30 transition-all outline-none" placeholder="Thanh Nguyen" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-label-sm uppercase tracking-[0.05em] text-on-surface-variant/70 block px-1">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-lg">mail</span>
+<input class="w-full bg-surface-container-lowest border border-transparent focus:border-primary/40 focus:ring-0 rounded-lg py-3 pl-11 pr-4 text-on-surface placeholder:text-on-surface-variant/30 transition-all outline-none" placeholder="celestial@meridian.com" type="email"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-label-sm uppercase tracking-[0.05em] text-on-surface-variant/70 block px-1">Password</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-lg">lock</span>
+<input class="w-full bg-surface-container-lowest border border-transparent focus:border-primary/40 focus:ring-0 rounded-lg py-3 pl-11 pr-4 text-on-surface placeholder:text-on-surface-variant/30 transition-all outline-none" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<div class="flex items-start gap-3 py-2">
+<input class="mt-1 w-4 h-4 rounded-sm border-outline-variant bg-surface-container-lowest text-primary focus:ring-0 focus:ring-offset-0 transition-colors" id="terms" type="checkbox"/>
+<label class="text-label-sm text-on-surface-variant leading-relaxed" for="terms">
+                            I agree to the <a class="text-primary hover:underline transition-all" href="#">Terms of Service</a> and <a class="text-primary hover:underline transition-all" href="#">Privacy Policy</a>
+</label>
+</div>
+<button class="alchemist-gradient w-full py-4 rounded-lg text-on-primary font-bold uppercase tracking-widest text-xs active:scale-[0.98] transition-all shadow-lg shadow-primary-container/10" type="submit">
+                        Sign Up
+                    </button>
+</form>
+<div class="relative my-8">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline-variant/15"></div>
+</div>
+<div class="relative flex justify-center">
+<span class="bg-surface-container px-4 text-label-sm text-on-surface-variant/50 uppercase tracking-widest">Or join with</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 bg-surface-container-high border border-outline-variant/15 hover:bg-surface-bright transition-all py-3 rounded-lg active:scale-95">
+<img alt="" class="w-5 h-5 opacity-80" data-alt="Official Google brand logo with vibrant primary colors on a transparent background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2b3W0DmijUMDZjVmi440-vYA88vVpi-NrVZakN6rv8SUneBzPxVWS1XYKWkzBkvMxMyYg5WO8bAMhl-_WYJA5QbpvY1qJ4OVz05NnUg8IMJ5peUy7PzWl4QU3NvSyadgZ0-zdKiQYtsGHl1k1_DHirqrQOy7sBSjONbYR-qQTDJw-XvlcLx4QK4MIplnwQypWlR6HdC0wwTqUE_oyAnDDd9gVzxV3bqIhVGp2qHLsvLdta0aVaDNUcoKqgjplL6VE01IvHkjXyZcG"/>
+<span class="text-label-sm font-semibold text-on-surface">Google</span>
+</button>
+<button class="flex items-center justify-center gap-2 bg-surface-container-high border border-outline-variant/15 hover:bg-surface-bright transition-all py-3 rounded-lg active:scale-95">
+<svg class="w-5 h-5 fill-[#1877F2]" viewbox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
+<span class="text-label-sm font-semibold text-on-surface">Facebook</span>
+</button>
+</div>
+<div class="mt-10 text-center">
+<p class="text-body-md text-on-surface-variant">
+                        Already have an account? 
+                        <a class="text-primary font-bold hover:underline ml-1" href="#">Sign In</a>
+</p>
+</div>
+</div>
+</div>
+</main>
+<footer class="w-full py-8 border-t border-[#534434]/15 bg-[#0b1326] flex flex-col md:flex-row justify-between items-center px-8 gap-4 font-['Inter'] text-[0.6875rem] tracking-[0.05em] uppercase">
+<div class="text-[#dae2fd]/50">© 2024 Celestial Meridian. Precision Mysticism.</div>
+<div class="flex gap-6">
+<a class="text-[#dae2fd]/50 hover:text-[#ffc174] transition-colors" href="#">Privacy Policy</a>
+<a class="text-[#dae2fd]/50 hover:text-[#ffc174] transition-colors" href="#">Terms of Service</a>
+<a class="text-[#dae2fd]/50 hover:text-[#ffc174] transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+</body></html>

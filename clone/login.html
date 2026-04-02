@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tử Vi Alchemist - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-tint": "#ffb95f",
+              "on-surface-variant": "#d8c3ad",
+              "error": "#ffb4ab",
+              "tertiary": "#ffc08e",
+              "tertiary-container": "#ff9837",
+              "primary-fixed-dim": "#ffb95f",
+              "tertiary-fixed": "#ffdcc3",
+              "error-container": "#93000a",
+              "on-tertiary-fixed": "#2f1500",
+              "primary": "#ffc174",
+              "surface-container-high": "#222a3d",
+              "surface-container": "#171f33",
+              "inverse-on-surface": "#283044",
+              "on-tertiary-fixed-variant": "#6e3900",
+              "on-surface": "#dae2fd",
+              "secondary-fixed-dim": "#b9c8de",
+              "surface-dim": "#0b1326",
+              "surface-container-highest": "#2d3449",
+              "secondary-fixed": "#d4e4fa",
+              "outline": "#a08e7a",
+              "on-primary-fixed-variant": "#653e00",
+              "on-secondary-fixed-variant": "#39485a",
+              "on-tertiary-container": "#6a3700",
+              "surface-variant": "#2d3449",
+              "background": "#0b1326",
+              "on-secondary-container": "#a7b6cc",
+              "inverse-primary": "#855300",
+              "on-secondary": "#233143",
+              "secondary-container": "#39485a",
+              "surface-bright": "#31394d",
+              "on-primary-container": "#613b00",
+              "on-background": "#dae2fd",
+              "on-primary": "#472a00",
+              "tertiary-fixed-dim": "#ffb77d",
+              "primary-fixed": "#ffddb8",
+              "on-error": "#690005",
+              "on-error-container": "#ffdad6",
+              "surface": "#0b1326",
+              "on-secondary-fixed": "#0d1c2d",
+              "on-tertiary": "#4d2600",
+              "surface-container-lowest": "#060e20",
+              "on-primary-fixed": "#2a1700",
+              "surface-container-low": "#131b2e",
+              "primary-container": "#f59e0b",
+              "outline-variant": "#534434",
+              "inverse-surface": "#dae2fd",
+              "secondary": "#b9c8de"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .bg-mystic-gradient {
+            background: radial-gradient(circle at 50% 50%, #131b2e 0%, #0b1326 100%);
+        }
+        .bg-button-gradient {
+            background: linear-gradient(135deg, #ffc174 0%, #f59e0b 100%);
+        }
+        .glass-panel {
+            background: rgba(49, 57, 77, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-mystic-gradient text-on-background min-h-screen flex flex-col selection:bg-primary selection:text-on-primary">
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-30">
+<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[120px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-tertiary/10 blur-[120px]"></div>
+</div>
+<main class="flex-grow flex items-center justify-center px-6 relative z-10 py-12">
+<div class="w-full max-w-[440px] flex flex-col gap-8">
+<div class="flex flex-col items-center text-center gap-3">
+<div class="w-12 h-12 flex items-center justify-center rounded-lg bg-surface-container-highest border border-outline-variant/20 mb-2">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<h1 class="text-[2.75rem] font-bold tracking-tighter leading-tight text-on-surface">Welcome Back</h1>
+<p class="text-on-surface-variant font-label text-[0.875rem] tracking-wide uppercase opacity-70">Enter your credentials to align your path</p>
+</div>
+<div class="glass-panel p-8 rounded-xl border border-outline-variant/15 shadow-[0_32px_32px_rgba(0,0,0,0.3)]">
+<form class="flex flex-col gap-6">
+<div class="flex flex-col gap-2">
+<label class="text-[0.6875rem] font-semibold tracking-[0.05em] uppercase text-primary/80" for="email">Email Address</label>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-md px-4 py-3 text-on-surface placeholder:text-on-surface-variant/30 focus:outline-none focus:border-primary/40 focus:ring-0 transition-all" id="email" placeholder="alchemist@celestial.com" type="email"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end">
+<label class="text-[0.6875rem] font-semibold tracking-[0.05em] uppercase text-primary/80" for="password">Secret Key</label>
+<a class="text-[0.6875rem] text-primary hover:text-primary-fixed-dim transition-colors tracking-[0.02em]" href="#">Forgot Password?</a>
+</div>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-md px-4 py-3 text-on-surface placeholder:text-on-surface-variant/30 focus:outline-none focus:border-primary/40 focus:ring-0 transition-all" id="password" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<button class="bg-button-gradient text-on-primary font-bold py-3.5 rounded-md hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-2" type="submit">
+<span>Sign In</span>
+<span class="material-symbols-outlined text-[1.2rem]" data-icon="north_east">north_east</span>
+</button>
+</form>
+<div class="relative my-8 flex items-center">
+<div class="flex-grow border-t border-outline-variant/15"></div>
+<span class="px-4 text-[0.6875rem] font-medium tracking-[0.1em] uppercase text-on-surface-variant/40 bg-transparent">Or continue with</span>
+<div class="flex-grow border-t border-outline-variant/15"></div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 bg-surface-container-high border border-outline-variant/15 py-3 rounded-md hover:bg-surface-container-highest transition-colors active:scale-95 duration-200 group">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.27.81-.57z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z" fill="#EA4335"></path>
+</svg>
+<span class="text-[0.875rem] font-medium text-on-surface">Google</span>
+</button>
+<button class="flex items-center justify-center gap-3 bg-[#1877F2] py-3 rounded-md hover:brightness-110 transition-all active:scale-95 duration-200">
+<svg class="w-5 h-5 text-white" fill="currentColor" viewbox="0 0 24 24">
+<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path>
+</svg>
+<span class="text-[0.875rem] font-medium text-white">Facebook</span>
+</button>
+</div>
+</div>
+<div class="flex justify-center items-center gap-2 py-4">
+<span class="text-on-surface-variant/60 text-[0.875rem]">Don't have an account?</span>
+<a class="text-primary font-semibold text-[0.875rem] hover:underline transition-all" href="#">Sign Up</a>
+</div>
+</div>
+</main>
+<footer class="w-full py-8 border-t border-[#534434]/15 bg-[#0b1326] flex flex-col md:flex-row justify-between items-center px-8 gap-4 mt-auto">
+<p class="font-['Inter'] text-[0.6875rem] tracking-[0.05em] uppercase text-[#dae2fd]/50">© 2024 Celestial Meridian. Precision Mysticism.</p>
+<div class="flex gap-8">
+<a class="font-['Inter'] text-[0.6875rem] tracking-[0.05em] uppercase text-[#dae2fd]/50 hover:text-[#ffc174] transition-colors" href="#">Privacy Policy</a>
+<a class="font-['Inter'] text-[0.6875rem] tracking-[0.05em] uppercase text-[#dae2fd]/50 hover:text-[#ffc174] transition-colors" href="#">Terms of Service</a>
+<a class="font-['Inter'] text-[0.6875rem] tracking-[0.05em] uppercase text-[#dae2fd]/50 hover:text-[#ffc174] transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+</body></html>

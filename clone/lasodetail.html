@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tử Vi Alchemist - Giải Đoán Chi Tiết</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary": "#4d2600",
+              "surface-variant": "#2d3449",
+              "surface-container-highest": "#2d3449",
+              "surface-container": "#171f33",
+              "tertiary": "#ffc08e",
+              "background": "#0b1326",
+              "surface-dim": "#0b1326",
+              "surface-container-low": "#131b2e",
+              "secondary": "#b9c8de",
+              "primary": "#ffc174",
+              "inverse-surface": "#dae2fd",
+              "on-primary-fixed-variant": "#653e00",
+              "error-container": "#93000a",
+              "outline": "#a08e7a",
+              "surface-container-lowest": "#060e20",
+              "secondary-container": "#39485a",
+              "surface-container-high": "#222a3d",
+              "on-secondary-container": "#a7b6cc",
+              "tertiary-fixed": "#ffdcc3",
+              "on-tertiary-fixed-variant": "#6e3900",
+              "on-surface-variant": "#d8c3ad",
+              "on-secondary": "#233143",
+              "on-error": "#690005",
+              "tertiary-fixed-dim": "#ffb77d",
+              "primary-container": "#f59e0b",
+              "on-secondary-fixed-variant": "#39485a",
+              "primary-fixed-dim": "#ffb95f",
+              "primary-fixed": "#ffddb8",
+              "outline-variant": "#534434",
+              "inverse-on-surface": "#283044",
+              "surface": "#0b1326",
+              "on-error-container": "#ffdad6",
+              "on-background": "#dae2fd",
+              "surface-bright": "#31394d",
+              "on-surface": "#dae2fd",
+              "on-tertiary-container": "#6a3700",
+              "secondary-fixed-dim": "#b9c8de",
+              "error": "#ffb4ab",
+              "inverse-primary": "#855300",
+              "tertiary-container": "#ff9837",
+              "on-primary-fixed": "#2a1700",
+              "on-primary-container": "#613b00",
+              "secondary-fixed": "#d4e4fa",
+              "on-primary": "#472a00",
+              "on-tertiary-fixed": "#2f1500",
+              "surface-tint": "#ffb95f",
+              "on-secondary-fixed": "#0d1c2d"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glow-primary {
+        box-shadow: 0 0 20px 0 rgba(255, 193, 116, 0.15);
+      }
+      .chart-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+        gap: 1px;
+        background-color: rgba(83, 68, 52, 0.15);
+      }
+      .palace-cell {
+        aspect-ratio: 1 / 1.1;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .modal-backdrop {
+        background-color: rgba(6, 14, 32, 0.7);
+        backdrop-filter: blur(8px);
+      }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary/30 antialiased overflow-hidden">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-[#0b1326]/70 backdrop-blur-xl flex justify-between items-center px-8 h-16 max-w-full mx-auto shadow-[0_32px_64px_-15px_rgba(218,226,253,0.06)] font-['Inter'] antialiased tracking-tight">
+<div class="text-lg font-bold tracking-tighter text-[#ffc174] uppercase">Tử Vi Alchemist</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#dae2fd]/60 hover:text-[#dae2fd] transition-colors" href="#">Home</a>
+<a class="text-[#ffc174] border-b-2 border-[#ffc174] pb-1" href="#">Chart</a>
+<a class="text-[#dae2fd]/60 hover:text-[#dae2fd] transition-colors" href="#">Timeline</a>
+<a class="text-[#dae2fd]/60 hover:text-[#dae2fd] transition-colors" href="#">Library</a>
+<a class="text-[#dae2fd]/60 hover:text-[#dae2fd] transition-colors" href="#">Saved Charts</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-[#ffc174] hover:bg-[#222a3d]/50 rounded-full transition-all active:scale-95 duration-200">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</nav>
+<main class="pt-24 pb-12 px-6 lg:px-12 max-w-[1600px] mx-auto min-h-screen opacity-40">
+<!-- Header & Action Row -->
+<header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<span class="text-label-sm tracking-[0.1em] uppercase text-primary/60 font-medium">Celestial Manuscript</span>
+<span class="h-[1px] w-12 bg-outline-variant/30"></span>
+</div>
+<h1 class="text-4xl font-extrabold tracking-tight text-on-surface">Lá Số Nam Mệnh</h1>
+<p class="text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">event</span>
+                    Giáp Tuất - 1994 • Tháng 10 • Ngày 15 • Giờ Thân
+                </p>
+</div>
+<div class="flex gap-3">
+<button class="px-5 py-2.5 bg-surface-container-high border border-outline-variant/20 rounded-md text-sm font-medium hover:bg-surface-bright transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">share</span> Export Chart
+                </button>
+<button class="px-5 py-2.5 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-md text-sm font-bold shadow-lg shadow-primary/10 hover:brightness-110 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">save</span> Save to Library
+                </button>
+</div>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Central Chart Section (Địa Bàn) -->
+<div class="lg:col-span-12 relative">
+<div class="chart-grid rounded-xl overflow-hidden border border-outline-variant/10 shadow-2xl bg-surface-container-low">
+<!-- Row 1 -->
+<div class="palace-cell bg-surface-container-lowest p-3 flex flex-col justify-between border-r border-b border-outline-variant/10">
+<div class="flex justify-between items-start">
+<span class="text-[0.6rem] text-on-surface-variant uppercase tracking-widest font-bold">Tỵ</span>
+<span class="text-[0.6rem] px-1.5 py-0.5 bg-secondary-container/30 text-on-secondary-container rounded">Đại Hao (H)</span>
+</div>
+<div class="text-center py-2">
+<div class="text-xs font-bold text-tertiary">Phụ Mẫu</div>
+<div class="text-[0.65rem] text-on-surface-variant">Thái Dương (V)</div>
+</div>
+<div class="text-[0.6rem] text-right text-on-surface-variant/40">54 - 63</div>
+</div>
+<div class="palace-cell bg-surface-container-lowest p-3 flex flex-col justify-between border-r border-b border-outline-variant/10">
+<div class="flex justify-between items-start">
+<span class="text-[0.6rem] text-on-surface-variant uppercase tracking-widest font-bold">Ngọ</span>
+</div>
+<div class="text-center py-2">
+<div class="text-xs font-bold text-tertiary">Phúc Đức</div>
+<div class="text-[0.65rem] text-on-surface-variant">Vũ Khúc (M)</div>
+</div>
+<div class="text-[0.6rem] text-right text-on-surface-variant/40">44 - 53</div>
+</div>
+<div class="palace-cell bg-surface-container-lowest p-3 flex flex-col justify-between border-r border-b border-outline-variant/10">
+<div class="flex justify-between items-start">
+<span class="text-[0.6rem] text-on-surface-variant uppercase tracking-widest font-bold">Mùi</span>
+</div>
+<div class="text-center py-2">
+<div class="text-xs font-bold text-tertiary">Điền Trạch</div>
+<div class="text-[0.65rem] text-on-surface-variant">Thiên Đồng (Đ)</div>
+</div>
+<div class="text-[0.6rem] text-right text-on-surface-variant/40">34 - 43</div>
+</div>
+<div class="palace-cell bg-surface-container-lowest p-3 flex flex-col justify-between border-b border-outline-variant/10">
+<div class="flex justify-between items-start">
+<span class="text-[0.6rem] text-on-surface-variant uppercase tracking-widest font-bold">Thân</span>
+</div>
+<div class="text-center py-2">
+<div class="text-xs font-bold text-tertiary">Quan Lộc</div>
+<div class="text-[0.65rem] text-on-surface-variant">Phá Quân (V)</div>
+</div>
+<div class="text-[0.6rem] text-right text-on-surface-variant/40">24 - 33</div>
+</div>
+<!-- Row 2 -->
+<div class="palace-cell bg-surface-container-lowest p-3 flex flex-col justify-between border-r border-b border-outline-variant/10">
+<div class="flex justify-between items-start">
+<span class="text-[0.6rem] text-on-surface-variant uppercase tracking-widest font-bold">Thìn</span>
+</div>
+<div class="text-center py-2">
+<div class="text-xs font-bold text-tertiary">Mệnh</div>
+</div>
+</div>
+<!-- Central Info Area (2x2 span) -->
+<div class="col-span-2 row-span-2 bg-surface-container p-6 flex flex-col justify-center items-center text-center border-r border-b border-outline-variant/10">
+<div class="space-y-4">
+<div class="text-primary font-extrabold text-2xl tracking-tighter">ĐỊA BÀN</div>
+<div class="grid grid-cols-2 gap-x-8 gap-y-2 text-[0.7rem]">
+<div class="text-left"><span class="text-on-surface-variant/60 uppercase">Mệnh:</span> <span class="text-on-surface font-semibold">Sơn Hạ Hỏa</span></div>
+<div class="text-left"><span class="text-on-surface-variant/60 uppercase">Cục:</span> <span class="text-on-surface font-semibold">Thủy Nhị Cục</span></div>
+<div class="text-left"><span class="text-on-surface-variant/60 uppercase">Chủ Mệnh:</span> <span class="text-on-surface font-semibold">Tham Lang</span></div>
+<div class="text-left"><span class="text-on-surface-variant/60 uppercase">Chủ Thân:</span> <span class="text-on-surface font-semibold">Thiên Cơ</span></div>
+</div>
+<div class="pt-4 flex justify-center">
+<div class="w-16 h-16 rounded-full border border-primary/20 flex items-center justify-center bg-primary/5">
+<span class="material-symbols-outlined text-primary text-3xl">auto_awesome</span>
+</div>
+</div>
+</div>
+</div>
+<div class="palace-cell bg-surface-container-lowest p-3 flex flex-col justify-between border-b border-outline-variant/10">
+<div class="flex justify-between items-start">
+<span class="text-[0.6rem] text-on-surface-variant uppercase tracking-widest font-bold">Dậu</span>
+</div>
+<div class="text-center py-2">
+<div class="text-xs font-bold text-tertiary">Nô Bộc</div>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="palace-cell bg-surface-container-lowest p-3 flex flex-col justify-between border-r border-b border-outline-variant/10 ring-2 ring-primary glow-primary relative z-10">
+<div class="absolute inset-0 bg-primary/5"></div>
+<div class="flex justify-between items-start relative z-10">
+<span class="text-[0.6rem] text-primary uppercase tracking-widest font-extrabold">Mão</span>
+<span class="text-[0.55rem] px-1.5 py-0.5 bg-error-container text-on-error-container rounded font-bold">TRIỆT</span>
+</div>
+<div class="text-center py-2 relative z-10">
+<div class="text-sm font-black text-primary uppercase tracking-tight">Cung Mệnh</div>
+<div class="text-[0.7rem] text-on-surface font-semibold">Thất Sát (H)</div>
+</div>
+<div class="text-[0.6rem] text-right text-primary relative z-10 font-bold">4 - 13</div>
+</div>
+<div class="palace-cell bg-surface-container-lowest p-3 flex flex-col justify-between border-b border-outline-variant/10">
+<div class="flex justify-between items-start">
+<span class="text-[0.6rem] text-on-surface-variant uppercase tracking-widest font-bold">Tuất</span>
+</div>
+<div class="text-center py-2">
+<div class="text-xs font-bold text-tertiary">Thiên Di</div>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="palace-cell bg-surface-container-lowest p-3 flex flex-col justify-between border-r border-outline-variant/10">
+<div class="flex justify-between items-start">
+<span class="text-[0.6rem] text-on-surface-variant uppercase tracking-widest font-bold">Dần</span>
+</div>
+<div class="text-center py-2">
+<div class="text-xs font-bold text-tertiary">Bào Ngôn</div>
+</div>
+</div>
+<div class="palace-cell bg-surface-container-lowest p-3 flex flex-col justify-between border-r border-outline-variant/10">
+<div class="flex justify-between items-start">
+<span class="text-[0.6rem] text-on-surface-variant uppercase tracking-widest font-bold">Sửu</span>
+</div>
+<div class="text-center py-2">
+<div class="text-xs font-bold text-tertiary">Phu Thê</div>
+</div>
+</div>
+<div class="palace-cell bg-surface-container-lowest p-3 flex flex-col justify-between border-r border-outline-variant/10">
+<div class="flex justify-between items-start">
+<span class="text-[0.6rem] text-on-surface-variant uppercase tracking-widest font-bold">Tý</span>
+</div>
+<div class="text-center py-2">
+<div class="text-xs font-bold text-tertiary">Tử Tức</div>
+</div>
+</div>
+<div class="palace-cell bg-surface-container-lowest p-3 flex flex-col justify-between border-outline-variant/10">
+<div class="flex justify-between items-start">
+<span class="text-[0.6rem] text-on-surface-variant uppercase tracking-widest font-bold">Hợi</span>
+</div>
+<div class="text-center py-2">
+<div class="text-xs font-bold text-tertiary">Tài Bạch</div>
+</div>
+</div>
+</div>
+<!-- SVG Aspect Lines -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-20" preserveaspectratio="none">
+<path d="M 12.5% 62.5% L 87.5% 87.5%" opacity="0.4" stroke="#ffc174" stroke-dasharray="4 4" stroke-width="1.5"></path>
+<path d="M 12.5% 62.5% L 62.5% 12.5%" opacity="0.4" stroke="#ffc174" stroke-dasharray="4 4" stroke-width="1.5"></path>
+<path d="M 12.5% 62.5% L 87.5% 37.5%" opacity="0.6" stroke="#ffc174" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</main>
+<!-- Modal Interaction -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-4 modal-backdrop">
+<div class="w-full max-w-2xl bg-surface-container/90 border border-primary/20 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] backdrop-blur-xl overflow-hidden animate-in fade-in zoom-in duration-300">
+<!-- Modal Header -->
+<div class="px-8 py-6 border-b border-outline-variant/10 flex justify-between items-center bg-gradient-to-r from-primary/5 to-transparent">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full border border-primary/30 flex items-center justify-center bg-primary/10">
+<span class="material-symbols-outlined text-primary">auto_awesome</span>
+</div>
+<div>
+<h2 class="text-xl font-extrabold tracking-tight text-on-surface">Giải đoán chi tiết Cung Mệnh</h2>
+<p class="text-xs text-on-surface-variant/70 uppercase tracking-widest font-bold">Vị trí: Cung Mão (Mộc) • Thất Sát Độc Thủ</p>
+</div>
+</div>
+<button class="p-2 hover:bg-surface-container-highest rounded-full transition-colors group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">close</span>
+</button>
+</div>
+<!-- Modal Content -->
+<div class="px-8 py-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Left Column: Primary Influence & Stars -->
+<div class="space-y-8">
+<section>
+<h3 class="text-[0.65rem] uppercase tracking-widest text-primary font-bold mb-4 flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                                Chính Tinh
+                            </h3>
+<div class="bg-surface-container-highest/40 p-4 rounded-xl border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-2">
+<span class="text-lg font-bold text-on-surface">Thất Sát</span>
+<span class="text-[0.6rem] px-2 py-0.5 bg-error-container/30 text-error rounded border border-error/20 font-bold uppercase">Hãm Địa</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                                Đại diện cho uy quyền và sự dũng mãnh nhưng khi hãm địa thường chủ về sự thăng trầm, lao tâm khổ tứ. Cuộc đời nhiều biến động lớn.
+                            </p>
+</div>
+</section>
+<section>
+<h3 class="text-[0.65rem] uppercase tracking-widest text-primary font-bold mb-4 flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                                Phụ Tinh Biểu Hiện
+                            </h3>
+<div class="space-y-4">
+<div class="group">
+<p class="text-sm font-bold text-primary group-hover:text-tertiary transition-colors mb-1">Thiên Hỷ</p>
+<p class="text-xs text-on-surface-variant leading-relaxed">Mang lại niềm vui, sự hân hoan và may mắn trong các mối quan hệ xã hội và tình cảm.</p>
+</div>
+<div class="group">
+<p class="text-sm font-bold text-primary group-hover:text-tertiary transition-colors mb-1">Đường Phù</p>
+<p class="text-xs text-on-surface-variant leading-relaxed">Chủ về sự sang trọng, vẻ ngoài bệ vệ và có duyên với các công việc liên quan đến giấy tờ, hành chính.</p>
+</div>
+<div class="group">
+<p class="text-sm font-bold text-primary group-hover:text-tertiary transition-colors mb-1">Lộc Tồn (M)</p>
+<p class="text-xs text-on-surface-variant leading-relaxed">Tượng trưng cho kho tàng, tiền bạc bền vững. Khi ở vị trí Miếu địa giúp hóa giải bớt cái xấu của chính tinh hãm.</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Challenges & Special Conditions -->
+<div class="space-y-8">
+<section>
+<h3 class="text-[0.65rem] uppercase tracking-widest text-error font-bold mb-4 flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                                Sát Tinh &amp; Trở Lực
+                            </h3>
+<div class="space-y-4">
+<div class="group">
+<p class="text-sm font-bold text-error group-hover:text-error-container transition-colors mb-1">Kiếp Sát</p>
+<p class="text-xs text-on-surface-variant leading-relaxed">Dễ gặp tai ương bất ngờ hoặc sự cạnh tranh khốc liệt trong sự nghiệp.</p>
+</div>
+<div class="group">
+<p class="text-sm font-bold text-error group-hover:text-error-container transition-colors mb-1">Hỏa Tinh (H)</p>
+<p class="text-xs text-on-surface-variant leading-relaxed">Làm gia tăng tính nóng nảy, vội vàng dẫn đến những quyết định sai lầm trong lúc thiếu kiềm chế.</p>
+</div>
+</div>
+</section>
+<!-- Special Condition: TRIỆT -->
+<section class="bg-error-container/10 border border-error-container/30 p-5 rounded-xl relative overflow-hidden">
+<div class="absolute -right-4 -top-4 opacity-10">
+<span class="material-symbols-outlined text-6xl">block</span>
+</div>
+<h3 class="text-xs font-black text-error uppercase mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">warning</span>
+                                Tác động của 'TRIỆT'
+                            </h3>
+<div class="space-y-3">
+<p class="text-xs text-on-surface leading-relaxed italic">
+                                "Triệt án ngữ tại cung Mão làm đảo lộn hoàn toàn tính chất nguyên bản."
+                            </p>
+<ul class="text-xs text-on-surface-variant space-y-2">
+<li class="flex items-start gap-2">
+<span class="text-error font-bold">!</span>
+<span>Làm giảm bớt tính hung bạo của Thất Sát hãm địa, giúp mệnh chủ tránh được những đại họa chết người.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-error font-bold">!</span>
+<span>Ngăn trở sự phát triển rực rỡ trong giai đoạn tiền vận (trước 30 tuổi). Thành công thường đến muộn.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-error font-bold">!</span>
+<span>Tạo ra cảm giác luôn bị vây hãm, khó bứt phá dù có năng lực thực thụ. Cần sự nhẫn nại phi thường.</span>
+</li>
+</ul>
+</div>
+</section>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-8 py-5 border-t border-outline-variant/10 bg-surface-container-low/50 flex justify-end gap-3">
+<button class="px-5 py-2 text-xs font-bold text-on-surface-variant hover:text-on-surface transition-colors">
+                            Sao Chép Luận Giải
+                        </button>
+<button class="px-6 py-2 bg-primary text-on-primary rounded-md text-xs font-bold shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                            Xác Nhận Đã Đọc
+                        </button>
+</div>
+</div>
+</div>
+<!-- Footer Component -->
+<footer class="w-full py-12 bg-[#0b1326] border-t border-[#534434]/15 flex flex-col items-center justify-center gap-6 font-['Inter'] text-[0.6875rem] tracking-[0.05em] uppercase opacity-40">
+<div class="flex gap-8">
+<a class="text-[#dae2fd]/40 hover:text-[#ffc174] transition-colors cursor-pointer" href="#">Terms</a>
+<a class="text-[#dae2fd]/40 hover:text-[#ffc174] transition-colors cursor-pointer" href="#">Privacy</a>
+<a class="text-[#dae2fd]/40 hover:text-[#ffc174] transition-colors cursor-pointer" href="#">Methodology</a>
+<a class="text-[#dae2fd]/40 hover:text-[#ffc174] transition-colors cursor-pointer" href="#">Support</a>
+</div>
+<p class="text-[#dae2fd]/40">© 2024 Tử Vi Alchemist. Precision Mysticism.</p>
+</footer>
+</body></html>

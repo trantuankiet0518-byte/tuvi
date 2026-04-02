@@ -1,0 +1,83 @@
+{
+  "nav": {
+    "home": "Trang chủ",
+    "lapLaSo": "Lập Lá Số",
+    "vanHan": "Vận Hạn",
+    "thuVien": "Thư viện",
+    "hoSo": "Hồ sơ",
+    "newChart": "Lập lá số mới"
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "search": "Tìm kiếm...",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "back": "Quay lại"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Nhập thông tin để tiếp tục hành trình",
+      "email": "Địa chỉ Email",
+      "password": "Mật khẩu",
+      "forgotPassword": "Quên mật khẩu?",
+      "submit": "Đăng nhập",
+      "orContinueWith": "Hoặc tiếp tục với",
+      "noAccount": "Chưa có tài khoản?",
+      "signUp": "Đăng ký"
+    },
+    "register": {
+      "title": "Tạo hồ sơ thiên văn",
+      "subtitle": "Khám phá bản mệnh với Tử Vi Đẩu Số.",
+      "fullName": "Họ và tên",
+      "email": "Địa chỉ Email",
+      "password": "Mật khẩu",
+      "agreePrefix": "Tôi đồng ý với",
+      "terms": "Điều khoản dịch vụ",
+      "and": "và",
+      "privacy": "Chính sách bảo mật",
+      "submit": "Đăng ký",
+      "orJoinWith": "Hoặc đăng ký với",
+      "haveAccount": "Đã có tài khoản?",
+      "signIn": "Đăng nhập"
+    }
+  },
+  "dashboard": {
+    "title": "Bảng điều khiển",
+    "welcome": "Xin chào, {name}",
+    "recentCharts": "Lá số gần đây",
+    "viewAll": "Xem tất cả",
+    "stats": {
+      "charts": "Lá số đã lập",
+      "readings": "Lần xem",
+      "saved": "Đã lưu"
+    }
+  },
+  "marketing": {
+    "hero": {
+      "badge": "Chỗ ngồi khóa tiếp theo sắp mở",
+      "title": "Trở thành",
+      "titleHighlight": "Bậc Thầy Tử Vi.",
+      "description": "Hệ thống đào tạo chuyên sâu kết hợp lý thuyết cổ điển và ứng dụng thực tiễn hiện đại.",
+      "cta": "Đăng ký khóa học",
+      "stats": "8000+ học viên"
+    },
+    "aboutUs": {
+      "title": "Về chúng tôi",
+      "description": "Tử Vi Academy là nơi đào tạo Tử Vi Đẩu Số uy tín hàng đầu."
+    },
+    "faq": {
+      "title": "Câu hỏi thường gặp"
+    },
+    "features": {
+      "title": "Tính năng nổi bật"
+    }
+  },
+  "views": {
+    "chart": {
+      "title": "Mệnh Bàn",
+      "subtitle": "Xem trước bản đồ sao",
+      "calculating": "Dữ liệu đang được tính toán..."
+    }
+  }
+}

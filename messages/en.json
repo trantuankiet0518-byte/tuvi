@@ -1,0 +1,83 @@
+{
+  "nav": {
+    "home": "Home",
+    "lapLaSo": "Birth Chart",
+    "vanHan": "Destiny Cycles",
+    "thuVien": "Library",
+    "hoSo": "Profile",
+    "newChart": "New Chart"
+  },
+  "common": {
+    "loading": "Loading...",
+    "search": "Search...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Enter your credentials to align your path",
+      "email": "Email Address",
+      "password": "Secret Key",
+      "forgotPassword": "Forgot Password?",
+      "submit": "Sign In",
+      "orContinueWith": "Or continue with",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign Up"
+    },
+    "register": {
+      "title": "Create your celestial profile",
+      "subtitle": "Chart your destiny with the ancient wisdom of Tử Vi.",
+      "fullName": "Full Name",
+      "email": "Email Address",
+      "password": "Password",
+      "agreePrefix": "I agree to the",
+      "terms": "Terms of Service",
+      "and": "and",
+      "privacy": "Privacy Policy",
+      "submit": "Sign Up",
+      "orJoinWith": "Or join with",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign In"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Hello, {name}",
+    "recentCharts": "Recent Charts",
+    "viewAll": "View all",
+    "stats": {
+      "charts": "Charts Created",
+      "readings": "Readings",
+      "saved": "Saved"
+    }
+  },
+  "marketing": {
+    "hero": {
+      "badge": "Seats for next program opening soon",
+      "title": "Become",
+      "titleHighlight": "Product Leader.",
+      "description": "We deliver transformative programs that empower emerging product designers.",
+      "cta": "Apply for Next Enrollment",
+      "stats": "8000+ Designers Launched"
+    },
+    "aboutUs": {
+      "title": "About Us",
+      "description": "Tử Vi Academy is the leading Tử Vi Đẩu Số training platform."
+    },
+    "faq": {
+      "title": "FAQ"
+    },
+    "features": {
+      "title": "Features"
+    }
+  },
+  "views": {
+    "chart": {
+      "title": "Birth Chart",
+      "subtitle": "Star map preview",
+      "calculating": "Calculating data..."
+    }
+  }
+}

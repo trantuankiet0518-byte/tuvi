@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "bazi-mcp/**",
+    "clone/**",
+    "ui-ux-pro-max-skill/**",
   ]),
 ]);
 
