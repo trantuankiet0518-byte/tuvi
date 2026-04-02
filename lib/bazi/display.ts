@@ -46,6 +46,8 @@ export const STAR_LABELS: Record<string, string> = {
   "That Sat": "Thất sát",
   "Pha Quan": "Phá quân",
   "Loc Ton": "Lộc tồn",
+  "Phuc Duc Sao": "Phúc đức (tuế)",
+  "Duong Tinh": "Dưỡng (trường sinh)",
   "Kinh Duong": "Kình dương",
   "Da La": "Đà la",
   "Thien Khoi": "Thiên khôi",

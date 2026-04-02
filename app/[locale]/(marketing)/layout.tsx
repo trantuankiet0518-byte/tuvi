@@ -4,22 +4,7 @@ import Navbar from "@/components/organisms/Navbar";
 export default function MarketingLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background text-on-surface overflow-x-hidden selection:bg-primary selection:text-on-primary">
-      {/* Hero video background */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute min-w-full min-h-full object-cover opacity-50 dark:opacity-60"
-        >
-          <source
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_105406_16f4600d-7a92-4292-b96e-b19156c7830a.mp4"
-            type="video/mp4"
-          />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" />
-      </div>
+      {/* Hero video background — disabled */}
 
       <Navbar />
 
