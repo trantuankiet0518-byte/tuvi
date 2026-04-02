@@ -4,3 +4,8 @@ export { default as Icon } from "./Icon";
 export { default as Badge } from "./Badge";
 export { default as Label } from "./Label";
 export { default as Avatar } from "./Avatar";
+export { default as ThemeToggle } from "./ThemeToggle";
+export { default as StarQualityBadge } from "./StarQualityBadge";
+export { default as ElementPill } from "./ElementPill";
+export { default as ProgressBar } from "./ProgressBar";
+export { default as InfoChip } from "./InfoChip";

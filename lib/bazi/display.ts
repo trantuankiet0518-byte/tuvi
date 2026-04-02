@@ -114,6 +114,7 @@ export const STAR_LABELS: Record<string, string> = {
   "Thien Tho": "Thiên thọ",
   "Hong Loan": "Hồng loan",
   "Thien Hy": "Thiên hỷ",
+  "Dao Hoa": "Đào hoa",
   "Thien Quan": "Thiên quan",
   "Thien Phuc": "Thiên phúc",
   "Thien Hinh": "Thiên hình",
@@ -121,6 +122,8 @@ export const STAR_LABELS: Record<string, string> = {
   "Thien Y": "Thiên y",
   "Hoa Cai": "Hoa cái",
   "Kiep Sat": "Kiếp sát",
+  "Tuan": "Tuần",
+  "Triet": "Triệt",
 };
 
 export const ELEMENT_LABELS: Record<string, string> = {

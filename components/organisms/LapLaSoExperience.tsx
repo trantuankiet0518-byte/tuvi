@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState, useTransition } from "react";
 import LapLaSoDetail from "@/components/organisms/LapLaSoDetail";
 import LapLaSoForm from "@/components/organisms/LapLaSoForm";
 import LapLaSoPreview from "@/components/organisms/LapLaSoPreview";
+import SavedChartsList from "@/components/organisms/SavedChartsList";
 import type { FortuneRequest, TuViEngineResult } from "@/lib/bazi/types";
 
 const DEFAULT_FORM: FortuneRequest = {
@@ -18,40 +19,41 @@ const DEFAULT_FORM: FortuneRequest = {
 };
 
 export default function LapLaSoExperience() {
-  const [form, setForm] = useState<FortuneRequest>(DEFAULT_FORM);
-  const [result, setResult] = useState<TuViEngineResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [form, setForm]       = useState<FortuneRequest>(DEFAULT_FORM);
+  const [result, setResult]   = useState<TuViEngineResult | null>(null);
+  const [error, setError]     = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const canSubmit = useMemo(() => Boolean(form.birthDate && form.birthTime && form.timezone), [form.birthDate, form.birthTime, form.timezone]);
+  const canSubmit = useMemo(
+    () => Boolean(form.birthDate && form.birthTime && form.timezone),
+    [form.birthDate, form.birthTime, form.timezone]
+  );
 
-  const updateField = useCallback(<K extends keyof FortuneRequest>(field: K, value: FortuneRequest[K]) => {
-    setForm((current) => ({ ...current, [field]: value }));
-  }, []);
+  const updateField = useCallback(
+    <K extends keyof FortuneRequest>(field: K, value: FortuneRequest[K]) => {
+      setForm((c) => ({ ...c, [field]: value }));
+    },
+    []
+  );
 
   const handleSubmit = useCallback(() => {
     if (!canSubmit) {
       setError("Vui lòng nhập đủ ngày sinh, giờ sinh và múi giờ.");
       return;
     }
-
     startTransition(async () => {
       setError(null);
-
-      const response = await fetch("/api/tuvi", {
+      const res  = await fetch("/api/tuvi", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-
-      const data = (await response.json()) as TuViEngineResult | { error: string };
-
-      if (!response.ok || "error" in data) {
+      const data = (await res.json()) as TuViEngineResult | { error: string };
+      if (!res.ok || "error" in data) {
         setResult(null);
         setError("error" in data ? data.error : "Không thể lập lá số.");
         return;
       }
-
       setResult(data);
     });
   }, [canSubmit, form]);
@@ -62,14 +64,36 @@ export default function LapLaSoExperience() {
     setForm(DEFAULT_FORM);
   }, []);
 
+  // Load a saved chart directly into detail view
+  const handleLoadSaved = useCallback((saved: TuViEngineResult) => {
+    setResult(saved);
+    setError(null);
+  }, []);
+
+  // ── Detail view ──
   if (result) {
     return <LapLaSoDetail result={result} onReset={handleReset} />;
   }
 
+  // ── Form + preview ──
   return (
     <>
-      <LapLaSoForm form={form} isPending={isPending} onFieldChange={updateField} onSubmit={handleSubmit} />
-      <LapLaSoPreview error={error} isPending={isPending} result={null} timezone={form.timezone} />
+      <LapLaSoForm
+        form={form}
+        isPending={isPending}
+        onFieldChange={updateField}
+        onSubmit={handleSubmit}
+      />
+      <LapLaSoPreview
+        error={error}
+        isPending={isPending}
+        result={null}
+        timezone={form.timezone}
+      />
+      {/* Saved charts below the form */}
+      <div className="col-span-12 mt-4">
+        <SavedChartsList onLoad={handleLoadSaved} />
+      </div>
     </>
   );
 }

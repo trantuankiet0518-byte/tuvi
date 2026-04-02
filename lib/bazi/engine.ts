@@ -135,6 +135,7 @@ const MINOR_ELEMENTS: Record<string, string> = {
   "Thien Tho": "Thổ",
   "Hong Loan": "Thủy",
   "Thien Hy": "Thủy",
+  "Dao Hoa": "Mộc",
   "Thien Quan": "Hỏa",
   "Thien Phuc": "Hỏa",
   "Thien Hinh": "Hỏa",
@@ -143,6 +144,8 @@ const MINOR_ELEMENTS: Record<string, string> = {
   "Thien Ma": "Hỏa",
   "Hoa Cai": "Kim",
   "Kiep Sat": "Hỏa",
+  "Tuan": "Kim",
+  "Triet": "Kim",
   "Hoa Loc": "Mộc",
   "Hoa Quyen": "Hỏa",
   "Hoa Khoa": "Thủy",
@@ -331,7 +334,7 @@ function getHoaLinhPositions(
     khoiCungHoaTinh = 3;
     khoiCungLinhTinh = 11;
   } else if ([6, 10, 2].includes(yearBranchPosition)) {
-    khoiCungHoaTinh = 11;
+    khoiCungHoaTinh = 4;
     khoiCungLinhTinh = 4;
   } else if ([12, 4, 8].includes(yearBranchPosition)) {
     khoiCungHoaTinh = 10;
@@ -366,6 +369,132 @@ function getThienMaPosition(yearBranchPosition: number): number {
   return 6;
 }
 
+function getVanTinhPositions(hourBranchPosition: number) {
+  const vanKhuc = dichCung(5, hourBranchPosition - 1);
+  const vanXuong = dichCung(11, -(hourBranchPosition - 1));
+
+  return { vanKhuc, vanXuong };
+}
+
+function getKhongKiepPositions(hourBranchPosition: number) {
+  const diaKiep = dichCung(12, hourBranchPosition - 1);
+  const diaKhong = dichCung(12, -(hourBranchPosition - 1));
+
+  return { diaKhong, diaKiep };
+}
+
+function getDaoHoaPosition(yearBranchPosition: number) {
+  if ([6, 10, 2].includes(yearBranchPosition)) return 7;
+  if ([9, 1, 5].includes(yearBranchPosition)) return 10;
+  if ([12, 4, 8].includes(yearBranchPosition)) return 1;
+  return 4;
+}
+
+function getTrietPositions(yearStemPosition: number): number[] {
+  if ([1, 6].includes(yearStemPosition)) return [9, 10];
+  if ([2, 7].includes(yearStemPosition)) return [7, 8];
+  if ([3, 8].includes(yearStemPosition)) return [5, 6];
+  if ([4, 9].includes(yearStemPosition)) return [3, 4];
+  return [1, 2];
+}
+
+function getTuanPositions(yearStemIdx: number, yearBranchIdx: number): number[] {
+  const tuanStartBranchIdx = mod12(yearBranchIdx - yearStemIdx);
+  return [
+    toOneBasedBranchIndex(mod12(tuanStartBranchIdx - 2)),
+    toOneBasedBranchIndex(mod12(tuanStartBranchIdx - 1)),
+  ];
+}
+
+function asSinglePosition(
+  starName: string,
+  positionOrPositions: number | number[]
+): number {
+  if (Array.isArray(positionOrPositions)) {
+    throw new Error(`An sao sai: ${starName} phải ở một cung duy nhất.`);
+  }
+
+  return positionOrPositions;
+}
+
+function asPairPositions(
+  starName: string,
+  positionOrPositions: number | number[]
+): [number, number] {
+  if (!Array.isArray(positionOrPositions) || positionOrPositions.length !== 2) {
+    throw new Error(`An sao sai: ${starName} phải chiếm đúng 2 cung.`);
+  }
+
+  return [positionOrPositions[0], positionOrPositions[1]];
+}
+
+function assertPosition(starName: string, actual: number, expected: number, detail: string) {
+  if (actual !== expected) {
+    throw new Error(
+      `An sao sai: ${starName} ở cung ${actual}, nhưng phải ở cung ${expected} (${detail}).`
+    );
+  }
+}
+
+function assertPairPositions(
+  starName: string,
+  actual: [number, number],
+  expected: [number, number],
+  detail: string
+) {
+  if (actual[0] !== expected[0] || actual[1] !== expected[1]) {
+    throw new Error(
+      `An sao sai: ${starName} ở cung [${actual.join(", ")}], nhưng phải ở [${expected.join(", ")}] (${detail}).`
+    );
+  }
+}
+
+function validateMinorStarSymmetries(
+  positions: Record<string, number | number[]>,
+  yearStemIdx: number,
+  yearBranchIdx: number,
+  hourBranchIdx: number
+) {
+  const hourBranchPosition = hourBranchIdx + 1;
+  const yearStemPosition = yearStemIdx + 1;
+  const yearBranchPosition = yearBranchIdx + 1;
+
+  const vanKhuc = asSinglePosition("Van Khuc", positions["Van Khuc"]);
+  const vanXuong = asSinglePosition("Van Xuong", positions["Van Xuong"]);
+  const expectedVanKhuc = dichCung(5, hourBranchPosition - 1);
+  const expectedVanXuong = dichCung(11, -(hourBranchPosition - 1));
+  assertPosition("Van Khuc", vanKhuc, expectedVanKhuc, "đối xứng theo giờ sinh");
+  assertPosition("Van Xuong", vanXuong, expectedVanXuong, "đối xứng theo giờ sinh");
+
+  const diaKhong = asSinglePosition("Dia Khong", positions["Dia Khong"]);
+  const diaKiep = asSinglePosition("Dia Kiep", positions["Dia Kiep"]);
+  const expectedDiaKhong = dichCung(12, -(hourBranchPosition - 1));
+  const expectedDiaKiep = dichCung(12, hourBranchPosition - 1);
+  assertPosition("Dia Khong", diaKhong, expectedDiaKhong, "đối xứng Không-Kiếp theo giờ sinh");
+  assertPosition("Dia Kiep", diaKiep, expectedDiaKiep, "đối xứng Không-Kiếp theo giờ sinh");
+
+  const longTri = asSinglePosition("Long Tri", positions["Long Tri"]);
+  const phuongCac = asSinglePosition("Phuong Cac", positions["Phuong Cac"]);
+  const expectedLongTri = dichCung(5, yearBranchPosition - 1);
+  const expectedPhuongCac = dichCung(2, 2 - expectedLongTri);
+  assertPosition("Long Tri", longTri, expectedLongTri, "an theo địa chi năm sinh");
+  assertPosition("Phuong Cac", phuongCac, expectedPhuongCac, "đối xứng với Long Trì");
+
+  const tuan = asPairPositions("Tuan", positions["Tuan"]);
+  const expectedTuan = getTuanPositions(yearStemIdx, yearBranchIdx) as [number, number];
+  assertPairPositions("Tuan", tuan, expectedTuan, "an theo can chi năm sinh");
+  if (mod12(tuan[1] - tuan[0]) !== 1) {
+    throw new Error(`An sao sai: Tuan phải nằm trên hai cung liền nhau, nhận [${tuan.join(", ")}].`);
+  }
+
+  const triet = asPairPositions("Triet", positions["Triet"]);
+  const expectedTriet = getTrietPositions(yearStemPosition) as [number, number];
+  assertPairPositions("Triet", triet, expectedTriet, "an theo thiên can năm sinh");
+  if (mod12(triet[1] - triet[0]) !== 1) {
+    throw new Error(`An sao sai: Triet phải nằm trên hai cung liền nhau, nhận [${triet.join(", ")}].`);
+  }
+}
+
 function getMinorStarPositions(
   yearStemIdx: number,
   yearBranchIdx: number,
@@ -377,7 +506,7 @@ function getMinorStarPositions(
   menhPosition: number,
   thanPosition: number,
   majorStarPositions: Record<string, number>
-): Record<string, number> {
+): Record<string, number | number[]> {
   const yearStemPosition = yearStemIdx + 1;
   const yearBranchPosition = yearBranchIdx + 1;
   const hourBranchPosition = hourBranchIdx + 1;
@@ -385,12 +514,15 @@ function getMinorStarPositions(
 
   const locTon = getLocTonPosition(yearStemIdx);
   const trangSinh = getTrangSinhPosition(cucNumber);
-  const vanKhuc = dichCung(5, hourBranchPosition - 1);
-  const vanXuong = dichCung(2, 2 - vanKhuc);
+  const { vanKhuc, vanXuong } = getVanTinhPositions(hourBranchPosition);
+  const { diaKhong, diaKiep } = getKhongKiepPositions(hourBranchPosition);
   const taPhu = dichCung(5, lunarMonth - 1);
   const huuBat = dichCung(2, 2 - taPhu);
   const thienKhoi = getThienKhoiPosition(yearStemPosition);
   const thienMa = getThienMaPosition(yearBranchPosition);
+  const daoHoa = getDaoHoaPosition(yearBranchPosition);
+  const trietPositions = getTrietPositions(yearStemPosition);
+  const tuanPositions = getTuanPositions(yearStemIdx, yearBranchIdx);
 
   const hoaByCan: Record<number, Record<"Hoa Loc" | "Hoa Quyen" | "Hoa Khoa" | "Hoa Ky", string>> = {
     1: { "Hoa Loc": "Liem Trinh", "Hoa Quyen": "Pha Quan", "Hoa Khoa": "Vu Khuc", "Hoa Ky": "Thai Duong" },
@@ -400,7 +532,7 @@ function getMinorStarPositions(
     5: { "Hoa Loc": "Tham Lang", "Hoa Quyen": "Thai Am", "Hoa Khoa": "Huu Bat", "Hoa Ky": "Thien Co" },
     6: { "Hoa Loc": "Vu Khuc", "Hoa Quyen": "Tham Lang", "Hoa Khoa": "Thien Luong", "Hoa Ky": "Van Khuc" },
     7: { "Hoa Loc": "Thai Duong", "Hoa Quyen": "Vu Khuc", "Hoa Khoa": "Thien Dong", "Hoa Ky": "Thai Am" },
-    8: { "Hoa Loc": "Cu Mon", "Hoa Quyen": "Thai Duong", "Hoa Khoa": "Van Khuc", "Hoa Ky": "Van Xuong" },
+    8: { "Hoa Loc": "Cu Mon", "Hoa Quyen": "Thai Am", "Hoa Khoa": "Van Xuong", "Hoa Ky": "Thien Luong" },
     9: { "Hoa Loc": "Thien Luong", "Hoa Quyen": "Tu Vi", "Hoa Khoa": "Thien Phu", "Hoa Ky": "Vu Khuc" },
     10: { "Hoa Loc": "Pha Quan", "Hoa Quyen": "Cu Mon", "Hoa Khoa": "Thai Am", "Hoa Ky": "Tham Lang" },
   };
@@ -408,7 +540,7 @@ function getMinorStarPositions(
   const hoaConfig = hoaByCan[yearStemPosition];
   const hoaLinh = getHoaLinhPositions(yearBranchPosition, hourBranchPosition, amDuongNamNu);
 
-  return {
+  const positions = {
     "Loc Ton": locTon,
     "Bac Sy": locTon,
     "Luc Si": dichCung(locTon, 1 * amDuongNamNu),
@@ -450,8 +582,8 @@ function getMinorStarPositions(
     "Duong": dichCung(trangSinh, -2 * amDuongNamNu),
     "Da La": dichCung(locTon, -1),
     "Kinh Duong": dichCung(locTon, 1),
-    "Dia Kiep": dichCung(11, hourBranchPosition),
-    "Dia Khong": dichCung(12, 12 - dichCung(11, hourBranchPosition)),
+    "Dia Kiep": diaKiep,
+    "Dia Khong": diaKhong,
     ...hoaLinh,
     "Long Tri": dichCung(5, yearBranchPosition - 1),
     "Phuong Cac": dichCung(2, 2 - dichCung(5, yearBranchPosition - 1)),
@@ -460,8 +592,8 @@ function getMinorStarPositions(
     "Huu Bat": huuBat,
     "Van Khuc": vanKhuc,
     "Van Xuong": vanXuong,
-    "Tam Thai": dichCung(5, lunarMonth + lunarDay - 2),
-    "Bat Toa": dichCung(2, 2 - dichCung(5, lunarMonth + lunarDay - 2)),
+    "Tam Thai": dichCung(taPhu, lunarDay - 1),
+    "Bat Toa": dichCung(huuBat, -(lunarDay - 1)),
     "An Quang": dichCung(vanXuong, lunarDay - 2),
     "Thien Quy": dichCung(2, 2 - dichCung(vanXuong, lunarDay - 2)),
     "Thien Khoi": thienKhoi,
@@ -472,6 +604,7 @@ function getMinorStarPositions(
     "Thien Tho": dichCung(thanPosition, yearBranchPosition - 1),
     "Hong Loan": dichCung(4, -yearBranchPosition + 1),
     "Thien Hy": dichCung(dichCung(4, -yearBranchPosition + 1), 6),
+    "Dao Hoa": daoHoa,
     "Thien Quan": [0, 8, 5, 6, 3, 4, 10, 12, 10, 11, 7][yearStemPosition],
     "Thien Phuc": [0, 10, 9, 1, 12, 4, 3, 7, 6, 7, 6][yearStemPosition],
     "Thien Hinh": dichCung(10, lunarMonth - 1),
@@ -480,11 +613,17 @@ function getMinorStarPositions(
     "Thien Ma": thienMa,
     "Hoa Cai": dichCung(thienMa, 2),
     "Kiep Sat": dichCung(thienMa, 3),
+    "Tuan": tuanPositions,
+    "Triet": trietPositions,
     "Hoa Loc": majorStarPositions[hoaConfig["Hoa Loc"]] ?? 1,
     "Hoa Quyen": majorStarPositions[hoaConfig["Hoa Quyen"]] ?? 1,
     "Hoa Khoa": hoaConfig["Hoa Khoa"] === "Van Xuong" ? vanXuong : hoaConfig["Hoa Khoa"] === "Van Khuc" ? vanKhuc : hoaConfig["Hoa Khoa"] === "Huu Bat" ? huuBat : majorStarPositions[hoaConfig["Hoa Khoa"]] ?? 1,
     "Hoa Ky": hoaConfig["Hoa Ky"] === "Van Xuong" ? vanXuong : hoaConfig["Hoa Ky"] === "Van Khuc" ? vanKhuc : majorStarPositions[hoaConfig["Hoa Ky"]] ?? 1,
   };
+
+  validateMinorStarSymmetries(positions, yearStemIdx, yearBranchIdx, hourBranchIdx);
+
+  return positions;
 }
 
 function palaceNote(name: string, stars: string[]): string {
@@ -555,17 +694,21 @@ function buildPalaces(
     });
   }
 
-  for (const [starName, position] of Object.entries(minorStarPositions)) {
-    const branchIdx = fromOneBasedBranchIndex(position);
-    const palace = palaces.find((item) => BRANCH_EN.indexOf(item.branch) === branchIdx);
-    if (!palace) continue;
+  for (const [starName, positionOrPositions] of Object.entries(minorStarPositions)) {
+    const positions = Array.isArray(positionOrPositions) ? positionOrPositions : [positionOrPositions];
 
-    palace.minorStars.push({
-      name: starName,
-      type: "phu_tinh",
-      quality: "binh_hoa",
-      element: MINOR_ELEMENTS[starName] ?? "Thổ",
-    });
+    for (const position of positions) {
+      const branchIdx = fromOneBasedBranchIndex(position);
+      const palace = palaces.find((item) => BRANCH_EN.indexOf(item.branch) === branchIdx);
+      if (!palace) continue;
+
+      palace.minorStars.push({
+        name: starName,
+        type: "phu_tinh",
+        quality: "binh_hoa",
+        element: MINOR_ELEMENTS[starName] ?? "Thổ",
+      });
+    }
   }
 
   return palaces.map((palace) => ({
