@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import Icon from "@/components/atoms/Icon";
 import Badge from "@/components/atoms/Badge";
 
 const mockCharts = [
@@ -18,7 +19,7 @@ export default function RecentCharts() {
         </h3>
         <Link href="/views" className="text-xs text-primary hover:underline flex items-center gap-1">
           {t("viewAll")}
-          <span className="material-symbols-outlined text-sm">arrow_forward</span>
+          <Icon className="text-sm" name="arrow_forward" />
         </Link>
       </div>
       <div className="divide-y divide-outline-variant/10">

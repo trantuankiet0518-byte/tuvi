@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, ReactNode, memo, useCallback } from "react";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 import Icon from "./Icon";
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
@@ -21,7 +21,7 @@ const variantStyles: Record<ButtonVariant, string> = {
     "bg-error-container text-on-error-container hover:brightness-110",
 };
 
-const Button = memo(function Button({
+export default function Button({
   variant = "primary",
   icon,
   iconPosition = "right",
@@ -30,13 +30,6 @@ const Button = memo(function Button({
   onClick,
   ...props
 }: ButtonProps) {
-  const handleClick = useCallback<NonNullable<ButtonProps["onClick"]>>(
-    (event) => {
-      onClick?.(event);
-    },
-    [onClick]
-  );
-
   return (
     <button
       className={`
@@ -46,7 +39,7 @@ const Button = memo(function Button({
         disabled:opacity-50 disabled:cursor-not-allowed
         ${variantStyles[variant]} ${className}
       `}
-      onClick={handleClick}
+      onClick={onClick}
       {...props}
     >
       {icon && iconPosition === "left" ? (
@@ -58,8 +51,4 @@ const Button = memo(function Button({
       ) : null}
     </button>
   );
-});
-
-Button.displayName = "Button";
-
-export default Button;
+}

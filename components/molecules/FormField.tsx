@@ -1,5 +1,6 @@
 import { InputHTMLAttributes } from "react";
 import Input from "@/components/atoms/Input";
+import Icon from "@/components/atoms/Icon";
 
 interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -27,7 +28,7 @@ export default function FormField({ label, name, error, icon, className = "", ..
       />
       {error && (
         <p className="text-xs text-error flex items-center gap-1">
-          <span className="material-symbols-outlined text-sm">error</span>
+          <Icon name="error" className="text-sm" />
           {error}
         </p>
       )}

@@ -23,8 +23,9 @@ export default function Avatar({ src, alt = "Avatar", size = "md", fallback }: A
         flex-shrink-0
         bg-surface-container-high flex items-center justify-center
       `}
-    >
+      >
       {src ? (
+        /* eslint-disable-next-line @next/next/no-img-element */
         <img src={src} alt={alt} className="w-full h-full object-cover" />
       ) : (
         <span className="font-bold text-primary">{initials}</span>

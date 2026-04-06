@@ -1,673 +1,864 @@
-import "server-only";
-// @ts-ignore — lunar-javascript không có type declarations
-import { Solar } from "lunar-javascript";
+﻿import "server-only";
 
-import type { FortuneRequest, TuViDecadeCycle, TuViEngineResult, TuViPalace, TuViStar } from "./types";
+import { toDate, toZonedTime } from "date-fns-tz";
+import {
+  ChildLimit,
+  DefaultEightCharProvider,
+  LunarHour,
+  LunarSect2EightCharProvider,
+  type Gender as TymeGender,
+  type LunarHour as TymeLunarHour,
+  SolarTime,
+} from "tyme4ts";
 
-// ─── Hằng số ──────────────────────────────────────────────────────────────────
+import type { FortuneRequest, TuViDecadeCycle, TuViEngineResult, TuViPalace, TuViStar } from "@/lib/bazi/types";
 
-// 12 địa chi: Tý=0 … Hợi=11
-const BRANCHES_EN = ["Ty","Suu","Dan","Mao","Thin","Ti","Ngo","Mui","Than","Dau","Tuat","Hoi"];
-const BRANCHES_VI = ["Tý","Sửu","Dần","Mão","Thìn","Tỵ","Ngọ","Mùi","Thân","Dậu","Tuất","Hợi"];
-const STEMS_VI    = ["Giáp","Ất","Bính","Đinh","Mậu","Kỷ","Canh","Tân","Nhâm","Quý"];
+const provider1 = new DefaultEightCharProvider();
+const provider2 = new LunarSect2EightCharProvider();
 
-// 12 cung theo thứ tự từ Mệnh (offset 0..11)
+const BRANCH_VI = ["Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"];
+const BRANCH_EN = ["Ty", "Suu", "Dan", "Mao", "Thin", "Ti", "Ngo", "Mui", "Than", "Dau", "Tuat", "Hoi"];
+const STEMS_VI = ["Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ", "Canh", "Tân", "Nhâm", "Quý"];
+const PALACE_ELEMENTS = ["Thủy", "Thổ", "Mộc", "Mộc", "Thổ", "Hỏa", "Hỏa", "Thổ", "Kim", "Kim", "Thổ", "Thủy"];
+
 const PALACE_NAMES = [
-  "Menh","Phu Mau","Phuc Duc","Dien Trach",
-  "Quan Loc","No Boc","Thien Di","Tat Ach",
-  "Tai Bach","Tu Tuc","Phu The","Huynh De",
+  "Menh",
+  "Phu Mau",
+  "Phuc Duc",
+  "Dien Trach",
+  "Quan Loc",
+  "No Boc",
+  "Thien Di",
+  "Tat Ach",
+  "Tai Bach",
+  "Tu Tuc",
+  "Phu The",
+  "Huynh De",
 ] as const;
 
-// ─── Utility ──────────────────────────────────────────────────────────────────
+const MAJOR_STAR_ORDER = [
+  "Tu Vi",
+  "Liem Trinh",
+  "Thien Dong",
+  "Vu Khuc",
+  "Thai Duong",
+  "Thien Co",
+  "Thien Phu",
+  "Thai Am",
+  "Tham Lang",
+  "Cu Mon",
+  "Thien Tuong",
+  "Thien Luong",
+  "That Sat",
+  "Pha Quan",
+] as const;
 
-const mod12 = (n: number) => ((n % 12) + 12) % 12;
+const MAJOR_ELEMENTS: Record<string, string> = {
+  "Tu Vi": "Thổ",
+  "Liem Trinh": "Hỏa",
+  "Thien Dong": "Thủy",
+  "Vu Khuc": "Kim",
+  "Thai Duong": "Hỏa",
+  "Thien Co": "Mộc",
+  "Thien Phu": "Thổ",
+  "Thai Am": "Thủy",
+  "Tham Lang": "Mộc",
+  "Cu Mon": "Thủy",
+  "Thien Tuong": "Thủy",
+  "Thien Luong": "Thổ",
+  "That Sat": "Kim",
+  "Pha Quan": "Thủy",
+};
 
-/** Dịch cung giống lasotuvi (1=Tý … 12=Hợi). */
-function dichCungPy(cungBanDau: number, ...deltas: number[]): number {
-  let s = cungBanDau;
-  for (const d of deltas) s += d;
-  const m = ((s % 12) + 12) % 12;
-  return m === 0 ? 12 : m;
+const MINOR_ELEMENTS: Record<string, string> = {
+  "Loc Ton": "Thổ",
+  "Bac Sy": "Thủy",
+  "Luc Si": "Hỏa",
+  "Thanh Long": "Thủy",
+  "Tieu Hao": "Hỏa",
+  "Tuong Quan": "Mộc",
+  "Tau Thu": "Kim",
+  "Phi Liem": "Hỏa",
+  "Hy Than": "Hỏa",
+  "Benh Phu": "Thổ",
+  "Dai Hao": "Hỏa",
+  "Phuc Binh": "Hỏa",
+  "Quan Phu 2": "Hỏa",
+  "Thai Tue": "Hỏa",
+  "Thieu Duong": "Hỏa",
+  "Tang Mon": "Mộc",
+  "Thieu Am": "Thủy",
+  "Quan Phu 3": "Hỏa",
+  "Tu Phu": "Kim",
+  "Nguyet Duc": "Hỏa",
+  "Tue Pha": "Hỏa",
+  "Long Duc": "Thủy",
+  "Bach Ho": "Kim",
+  "Phuc Duc": "Thổ",
+  "Thien Duc": "Hỏa",
+  "Dieu Khach": "Hỏa",
+  "Truc Phu": "Kim",
+  "Trang Sinh": "Thủy",
+  "Moc Duc": "Thủy",
+  "Quan Doi": "Kim",
+  "Lam Quan": "Kim",
+  "De Vuong": "Kim",
+  "Suy": "Thủy",
+  "Benh": "Hỏa",
+  "Tu": "Hỏa",
+  "Mo": "Thổ",
+  "Tuyet": "Thổ",
+  "Thai": "Thổ",
+  "Duong": "Mộc",
+  "Da La": "Kim",
+  "Kinh Duong": "Kim",
+  "Dia Khong": "Hỏa",
+  "Dia Kiep": "Hỏa",
+  "Hoa Tinh": "Hỏa",
+  "Linh Tinh": "Hỏa",
+  "Long Tri": "Thủy",
+  "Phuong Cac": "Thổ",
+  "Giai Than": "Mộc",
+  "Ta Phu": "Thổ",
+  "Huu Bat": "Thổ",
+  "Van Khuc": "Thủy",
+  "Van Xuong": "Kim",
+  "Tam Thai": "Mộc",
+  "Bat Toa": "Thủy",
+  "An Quang": "Mộc",
+  "Thien Quy": "Thổ",
+  "Thien Khoi": "Hỏa",
+  "Thien Viet": "Hỏa",
+  "Thien Hu": "Thủy",
+  "Thien Khoc": "Thủy",
+  "Thien Tai": "Thổ",
+  "Thien Tho": "Thổ",
+  "Hong Loan": "Thủy",
+  "Thien Hy": "Thủy",
+  "Dao Hoa": "Mộc",
+  "Thien Quan": "Hỏa",
+  "Thien Phuc": "Hỏa",
+  "Thien Hinh": "Hỏa",
+  "Thien Rieu": "Thủy",
+  "Thien Y": "Thủy",
+  "Thien Ma": "Hỏa",
+  "Hoa Cai": "Kim",
+  "Kiep Sat": "Hỏa",
+  "Tuan": "Kim",
+  "Triet": "Kim",
+  "Hoa Loc": "Mộc",
+  "Hoa Quyen": "Hỏa",
+  "Hoa Khoa": "Thủy",
+  "Hoa Ky": "Thủy",
+};
+
+const STAR_QUALITY: Record<string, { mieu: number[]; vuong: number[]; dac: number[]; ham?: number[] }> = {
+  "Tu Vi": { mieu: [4, 10], vuong: [2, 8], dac: [0, 1, 6, 7] },
+  "Liem Trinh": { mieu: [2, 8], vuong: [0, 6], dac: [3, 9], ham: [5, 11] },
+  "Thien Dong": { mieu: [0, 6], vuong: [3, 9], dac: [2, 8], ham: [1, 4, 7, 10] },
+  "Vu Khuc": { mieu: [3, 9], vuong: [1, 7], dac: [4, 10], ham: [5, 11] },
+  "Thai Duong": { mieu: [2, 6], vuong: [3, 9], dac: [1, 7], ham: [10, 11, 0] },
+  "Thien Co": { mieu: [1, 5, 7, 11], vuong: [2, 8], dac: [0, 6], ham: [3, 9] },
+  "Thien Phu": { mieu: [4, 10], vuong: [2, 8], dac: [0, 6] },
+  "Thai Am": { mieu: [0, 6], vuong: [9, 10], dac: [1, 7], ham: [3, 4, 5] },
+  "Tham Lang": { mieu: [2, 8], vuong: [0, 6], dac: [4, 10], ham: [1, 7] },
+  "Cu Mon": { mieu: [3, 9], vuong: [0, 6], dac: [1, 7], ham: [4, 10] },
+  "Thien Tuong": { mieu: [1, 7], vuong: [2, 8], dac: [0, 6], ham: [3, 9] },
+  "Thien Luong": { mieu: [2, 8], vuong: [0, 6], dac: [3, 9], ham: [5, 11] },
+  "That Sat": { mieu: [1, 7], vuong: [2, 8], dac: [4, 10], ham: [3, 9] },
+  "Pha Quan": { mieu: [0, 6], vuong: [3, 9], dac: [2, 8], ham: [1, 7] },
+};
+
+function mod12(n: number): number {
+  return ((n % 12) + 12) % 12;
 }
 
-/** Tử Vi & vị trí 1-based (lasotuvi) → index 0-based (Tý=0) cho engine UI. */
-function pyChiToTs(py: number): number {
-  return py - 1;
+function toOneBasedBranchIndex(zeroBased: number): number {
+  return zeroBased + 1;
 }
 
-// ─── Chuyển đổi ngày sinh → Lunar ─────────────────────────────────────────────
+function fromOneBasedBranchIndex(oneBased: number): number {
+  return mod12(oneBased - 1);
+}
 
-function buildLunar(input: FortuneRequest) {
+function dichCung(position: number, steps: number): number {
+  const raw = ((position - 1 + steps) % 12 + 12) % 12;
+  return raw + 1;
+}
+
+function buildLunarHour(input: FortuneRequest): TymeLunarHour {
   const [year, month, day] = input.birthDate.split("-").map(Number);
-  const [hour, minute]     = input.birthTime.split(":").map(Number);
+  const [hour, minute] = input.birthTime.split(":").map(Number);
 
-  if ([year, month, day, hour, minute].some(Number.isNaN))
+  if ([year, month, day, hour, minute].some(Number.isNaN)) {
     throw new Error("Ngày giờ sinh không hợp lệ.");
+  }
 
   if (input.calendarType === "am") {
-    // Âm lịch: dùng trực tiếp
-    // lunar-javascript không có fromLunarYmdHms trực tiếp, dùng Lunar.fromYmdHms
-    // @ts-ignore
-    const { Lunar } = require("lunar-javascript");
-    return Lunar.fromYmdHms(year, month, day, hour, minute, 0);
+    return LunarHour.fromYmdHms(year, month, day, hour, minute, 0);
   }
 
-  // Dương lịch: chuyển timezone về giờ địa phương
-  // timezone dạng "+07:00" hoặc "-08:00"
-  const tzSign  = input.timezone.startsWith("-") ? -1 : 1;
-  const tzParts = input.timezone.replace(/[+-]/, "").split(":");
-  const tzHours = parseInt(tzParts[0]) * tzSign;
-  // Solar.fromYmdHms nhận giờ địa phương trực tiếp
-  const solar = Solar.fromYmdHms(year, month, day, hour, minute, 0);
-  return solar.getLunar();
+  const iso = `${input.birthDate}T${input.birthTime}:00${input.timezone}`;
+  const utc = toDate(iso);
+  const zoned = toZonedTime(utc, input.timezone);
+  const solar = SolarTime.fromYmdHms(
+    zoned.getFullYear(),
+    zoned.getMonth() + 1,
+    zoned.getDate(),
+    zoned.getHours(),
+    zoned.getMinutes(),
+    0
+  );
+
+  return solar.getLunarHour();
 }
 
-// ─── Mệnh cung & Thân cung ────────────────────────────────────────────────────
-// Mệnh: khởi Dần(2), thuận tháng, nghịch giờ
-// Thân: khởi Dần(2), thuận tháng, thuận giờ
-
-function getMenhIdx(lunarMonth: number, hourZhiIdx: number): number {
-  return mod12(2 + (lunarMonth - 1) - hourZhiIdx);
-}
-function getThanIdx(lunarMonth: number, hourZhiIdx: number): number {
-  return mod12(2 + (lunarMonth - 1) + hourZhiIdx);
+function getMenhIdx(lunarMonth: number, hourBranchIdx: number): number {
+  return mod12(2 + (lunarMonth - 1) - hourBranchIdx);
 }
 
-// ─── Cục từ Nạp Âm năm sinh ───────────────────────────────────────────────────
-// Nạp Âm → Ngũ hành → Số cục
+function getThanIdx(lunarMonth: number, hourBranchIdx: number): number {
+  return mod12(2 + (lunarMonth - 1) + hourBranchIdx);
+}
 
-/** Ma trận nạp âm lasotuvi: hàng địa chi 1–12, cột thiên can 1–10 (Giáp=1…Quý=10). */
-const NAP_AM_MATRIX: (string | false)[][] = [
-  [],
-  [false, "K1", false, "T1", false, "H1", false, "O1", false, "M1", false],
-  [false, false, "K1", false, "T1", false, "H1", false, "O1", false, "M1"],
-  [false, "T2", false, "H2", false, "O2", false, "M2", false, "K2", false],
-  [false, false, "T2", false, "H2", false, "O2", false, "M2", false, "K2"],
-  [false, "H3", false, "O3", false, "M3", false, "K3", false, "T3", false],
-  [false, false, "H3", false, "O3", false, "M3", false, "K3", false, "T3"],
-  [false, "K4", false, "T4", false, "H4", false, "O4", false, "M4", false],
-  [false, false, "K4", false, "T4", false, "H4", false, "O4", false, "M4"],
-  [false, "T5", false, "H5", false, "O5", false, "M5", false, "K5", false],
-  [false, false, "T5", false, "H5", false, "O5", false, "M5", false, "K5"],
-  [false, "H6", false, "O6", false, "M6", false, "K6", false, "T6", false],
-  [false, false, "H6", false, "O6", false, "M6", false, "K6", false, "T6"],
+/**
+ * Ngũ Hổ Độn — find the Heaven Stem (Can) index of the Mệnh Palace.
+ *
+ * The rule derives the Can of Dần (branch index 2) from the year's Can,
+ * then offsets to the Mệnh Palace's branch index.
+ *
+ * Year Can group → Can of Dần:
+ *   Giáp(0)/Kỷ(5) → Bính(2)
+ *   Ất(1)/Canh(6) → Mậu(4)
+ *   Bính(2)/Tân(7) → Canh(6)
+ *   Đinh(3)/Nhâm(8) → Nhâm(8)
+ *   Mậu(4)/Quý(9) → Giáp(0)
+ */
+function getMenhCanIdx(yearStemIdx: number, menhBranchIdx: number): number {
+  const danCanTable = [2, 4, 6, 8, 0, 2, 4, 6, 8, 0]; // indexed by yearStemIdx 0-9
+  const danCan = danCanTable[yearStemIdx];
+  // Dần is branch index 2; offset from Dần to menhBranchIdx
+  const offset = mod12(menhBranchIdx - 2);
+  return (danCan + offset) % 10;
+}
+
+const NAP_AM_CORRECT: string[] = [
+  "Kim", "Kim", "Hoa", "Hoa", "Moc", "Moc", "Tho", "Tho", "Kim", "Kim",
+  "Hoa", "Hoa", "Thuy", "Thuy", "Tho", "Tho", "Kim", "Kim", "Moc", "Moc",
+  "Thuy", "Thuy", "Tho", "Tho", "Hoa", "Hoa", "Moc", "Moc", "Thuy", "Thuy",
+  "Kim", "Kim", "Hoa", "Hoa", "Moc", "Moc", "Tho", "Tho", "Kim", "Kim",
+  "Hoa", "Hoa", "Thuy", "Thuy", "Tho", "Tho", "Kim", "Kim", "Moc", "Moc",
+  "Thuy", "Thuy", "Tho", "Tho", "Hoa", "Hoa", "Moc", "Moc", "Thuy", "Thuy",
 ];
 
-function nguHanhLetterToCuc(letter: string): { name: string; number: number } {
-  switch (letter) {
-    case "T": return { name: "Thuy Nhi Cuc", number: 2 };
-    case "M": return { name: "Moc Tam Cuc",  number: 3 };
-    case "K": return { name: "Kim Tu Cuc",   number: 4 };
-    case "O": return { name: "Tho Ngu Cuc",  number: 5 };
-    case "H": return { name: "Hoa Luc Cuc",  number: 6 };
+function getCuc(stemIdx: number, branchIdx: number): { name: string; number: number } {
+  const pos60 = (stemIdx * 36 + branchIdx * 25) % 60;
+  const element = NAP_AM_CORRECT[pos60] ?? "Hoa";
+
+  switch (element) {
+    case "Thuy":
+      return { name: "Thủy nhị cục", number: 2 };
+    case "Moc":
+      return { name: "Mộc tam cục", number: 3 };
+    case "Kim":
+      return { name: "Kim tứ cục", number: 4 };
+    case "Tho":
+      return { name: "Thổ ngũ cục", number: 5 };
     default:
-      throw new Error(`Nạp âm không hợp lệ: ${letter}`);
+      return { name: "Hỏa lục cục", number: 6 };
   }
 }
 
-/** Nạp âm cung Mệnh → ngũ hành cục (Bắc Tông, theo lasotuvi AmDuong.timCuc). */
-function timCuc(viTriCungMenhPy: number, canNamPy: number): { name: string; number: number } {
-  const canThangGieng = (canNamPy * 2 + 1) % 10;
-  let canThangMenh = ((viTriCungMenhPy - 3) % 12 + canThangGieng) % 10;
-  if (canThangMenh === 0) canThangMenh = 10;
-  const row = NAP_AM_MATRIX[viTriCungMenhPy];
-  if (!row) throw new Error("timCuc: địa chi không hợp lệ");
-  const cell = row[canThangMenh];
-  if (typeof cell !== "string" || !/^[KMTHO]/.test(cell))
-    throw new Error("timCuc: ô nạp âm trống");
-  return nguHanhLetterToCuc(cell[0]!);
-}
-
-// ─── An Tử Vi theo Cục và ngày âm lịch (lasotuvi AmDuong.timTuVi) ────────────
-
-function timTuViPy(lunarDay: number, cucSo: number): number {
-  if (![2, 3, 4, 5, 6].includes(cucSo)) throw new Error("Số cục phải 2–6");
+function getTuViPosition(cucNumber: number, lunarDay: number): number {
   let cungDan = 3;
-  let cuc = cucSo;
-  const cucBanDau = cucSo;
+  let cuc = cucNumber;
+
+  if (![2, 3, 4, 5, 6].includes(cucNumber)) {
+    throw new Error("Số cục phải nằm trong khoảng 2-6.");
+  }
+
   while (cuc < lunarDay) {
-    cuc += cucBanDau;
+    cuc += cucNumber;
     cungDan += 1;
   }
+
   let saiLech = cuc - lunarDay;
-  if (saiLech % 2 === 1) saiLech = -saiLech;
-  return dichCungPy(cungDan, saiLech);
+  if (saiLech % 2 === 1) {
+    saiLech = -saiLech;
+  }
+
+  return dichCung(cungDan, saiLech);
 }
 
-// ─── Vị trí 14 chính tinh (lasotuvi App.lapDiaBan — tọa độ 1-based rồi đổi 0-based)
+function getMajorStarPositions(tuViPosition: number): Record<string, number> {
+  const thienPhuPosition = dichCung(3, 3 - tuViPosition);
 
-function getMajorStarPositions(tuViTs0: number): Record<string, number> {
-  const tvPy = tuViTs0 + 1;
-  const tpPy = dichCungPy(3, 3 - tvPy);
   return {
-    "Tu Vi":       tuViTs0,
-    "Liem Trinh":  pyChiToTs(dichCungPy(tvPy, 4)),
-    "Thien Dong":  pyChiToTs(dichCungPy(tvPy, 7)),
-    "Vu Khuc":     pyChiToTs(dichCungPy(tvPy, 8)),
-    "Thai Duong":  pyChiToTs(dichCungPy(tvPy, 9)),
-    "Thien Co":    pyChiToTs(dichCungPy(tvPy, 11)),
-    "Thien Phu":   pyChiToTs(tpPy),
-    "Thai Am":     pyChiToTs(dichCungPy(tpPy, 1)),
-    "Tham Lang":   pyChiToTs(dichCungPy(tpPy, 2)),
-    "Cu Mon":      pyChiToTs(dichCungPy(tpPy, 3)),
-    "Thien Tuong": pyChiToTs(dichCungPy(tpPy, 4)),
-    "Thien Luong": pyChiToTs(dichCungPy(tpPy, 5)),
-    "That Sat":    pyChiToTs(dichCungPy(tpPy, 6)),
-    "Pha Quan":    pyChiToTs(dichCungPy(tpPy, 10)),
+    "Tu Vi": tuViPosition,
+    "Liem Trinh": dichCung(tuViPosition, 4),
+    "Thien Dong": dichCung(tuViPosition, 7),
+    "Vu Khuc": dichCung(tuViPosition, 8),
+    "Thai Duong": dichCung(tuViPosition, 9),
+    "Thien Co": dichCung(tuViPosition, 11),
+    "Thien Phu": thienPhuPosition,
+    "Thai Am": dichCung(thienPhuPosition, 1),
+    "Tham Lang": dichCung(thienPhuPosition, 2),
+    "Cu Mon": dichCung(thienPhuPosition, 3),
+    "Thien Tuong": dichCung(thienPhuPosition, 4),
+    "Thien Luong": dichCung(thienPhuPosition, 5),
+    "That Sat": dichCung(thienPhuPosition, 6),
+    "Pha Quan": dichCung(thienPhuPosition, 10),
   };
 }
 
-// ─── Chất lượng sao (Miếu/Vượng/Đắc/Hãm) ─────────────────────────────────────
-
-const STAR_QUALITY_TABLE: Record<string, { mieu: number[]; vuong: number[]; dac: number[]; ham: number[] }> = {
-  "Tu Vi":       { mieu:[4,10],    vuong:[2,8],    dac:[0,6,1,7],  ham:[3,9,5,11] },
-  "Thien Co":    { mieu:[1,5,7,11],vuong:[2,8],    dac:[0,6],      ham:[3,9,4,10] },
-  "Thai Duong":  { mieu:[2,6],     vuong:[3,9],    dac:[1,7],      ham:[0,4,5,8,10,11] },
-  "Vu Khuc":     { mieu:[3,9],     vuong:[1,7],    dac:[4,10],     ham:[0,6,2,8] },
-  "Thien Dong":  { mieu:[0,6],     vuong:[3,9],    dac:[2,8],      ham:[1,5,7,11] },
-  "Liem Trinh":  { mieu:[2,8],     vuong:[0,6],    dac:[3,9],      ham:[1,5,7,11] },
-  "Thien Phu":   { mieu:[4,10],    vuong:[2,8],    dac:[0,6],      ham:[1,5,7,11] },
-  "Thai Am":     { mieu:[0,6],     vuong:[3,9],    dac:[1,7],      ham:[2,4,8,10] },
-  "Tham Lang":   { mieu:[2,8],     vuong:[0,6],    dac:[4,10],     ham:[1,5,7,11] },
-  "Cu Mon":      { mieu:[3,9],     vuong:[0,6],    dac:[1,7],      ham:[2,4,8,10] },
-  "Thien Tuong": { mieu:[1,7],     vuong:[2,8],    dac:[0,6],      ham:[3,5,9,11] },
-  "Thien Luong": { mieu:[2,8],     vuong:[0,6],    dac:[3,9],      ham:[1,5,7,11] },
-  "That Sat":    { mieu:[1,7],     vuong:[2,8],    dac:[4,10],     ham:[0,6,3,9] },
-  "Pha Quan":    { mieu:[0,6],     vuong:[3,9],    dac:[2,8],      ham:[1,5,7,11] },
-};
-
 function getQuality(starName: string, branchIdx: number): TuViStar["quality"] {
-  const q = STAR_QUALITY_TABLE[starName];
+  const q = STAR_QUALITY[starName];
   if (!q) return "binh_hoa";
   if (q.mieu.includes(branchIdx)) return "mieu_dia";
   if (q.vuong.includes(branchIdx)) return "vuong_dia";
-  if (q.dac.includes(branchIdx))  return "dac_dia";
-  if (q.ham.includes(branchIdx))  return "ham_dia";
+  if (q.dac.includes(branchIdx)) return "dac_dia";
+  if (q.ham?.includes(branchIdx)) return "ham_dia";
   return "binh_hoa";
 }
 
-// ─── Tứ Hóa Bắc Tông (Thái Thứ Lang) ─────────────────────────────────────────
-// Trả về tên sao được hóa theo Can năm
-
-const TU_HOA: Record<number, { loc: string; quyen: string; khoa: string; ky: string }> = {
-  0: { loc:"Liem Trinh", quyen:"Pha Quan",   khoa:"Vu Khuc",     ky:"Thai Duong"  }, // Giáp
-  1: { loc:"Thien Co",   quyen:"Thien Luong",khoa:"Tu Vi",       ky:"Thai Am"     }, // Ất
-  2: { loc:"Thien Dong", quyen:"Thien Co",   khoa:"Van Xuong",   ky:"Liem Trinh"  }, // Bính
-  3: { loc:"Thai Am",    quyen:"Thien Dong", khoa:"Thien Co",    ky:"Cu Mon"      }, // Đinh
-  4: { loc:"Tham Lang",  quyen:"Thai Am",    khoa:"Huu Bat",     ky:"Thien Co"    }, // Mậu
-  5: { loc:"Vu Khuc",    quyen:"Tham Lang",  khoa:"Thien Luong", ky:"Van Khuc"    }, // Kỷ
-  6: { loc:"Thai Duong", quyen:"Vu Khuc",    khoa:"Thien Dong",  ky:"Thai Am"     }, // Canh
-  7: { loc:"Cu Mon",     quyen:"Thai Am",    khoa:"Van Xuong",   ky:"Thien Luong" }, // Tân
-  8: { loc:"Thien Luong",quyen:"Tu Vi",      khoa:"Thien Phu",   ky:"Vu Khuc"     }, // Nhâm
-  9: { loc:"Pha Quan",   quyen:"Cu Mon",     khoa:"Thai Am",     ky:"Tham Lang"   }, // Quý
-};
-
-// ─── An phụ tinh (Bắc Tông — bám lasotuvi App.lapDiaBan) ─────────────────────
-
-function timTrangSinhPy(cucSo: number): number {
-  if (cucSo === 6) return 3;
-  if (cucSo === 4) return 6;
-  if (cucSo === 2 || cucSo === 5) return 9;
-  if (cucSo === 3) return 12;
-  throw new Error("Số cục không hợp lệ cho Tràng sinh");
+function getAmDuongNamNu(yearStemIdx: number, gender: FortuneRequest["gender"]): 1 | -1 {
+  const amDuongNamSinh: 1 | -1 = yearStemIdx % 2 === 0 ? 1 : -1;
+  const gioiTinh: 1 | -1 = gender === "nam" ? 1 : -1;
+  return (gioiTinh * amDuongNamSinh) as 1 | -1;
 }
 
-function timCoThanPy(chiNamPy: number): number {
-  if ([12, 1, 2].includes(chiNamPy)) return 3;
-  if ([3, 4, 5].includes(chiNamPy)) return 6;
-  if ([6, 7, 8].includes(chiNamPy)) return 9;
-  return 12;
+function getLocTonPosition(yearStemIdx: number): number {
+  const table = [3, 4, 6, 7, 6, 7, 9, 10, 12, 1];
+  return table[yearStemIdx] ?? 3;
 }
 
-function timThienMaPy(chiNamPy: number): number {
-  const r = chiNamPy % 4;
-  if (r === 1) return 3;
-  if (r === 2) return 12;
-  if (r === 3) return 9;
+function getTrangSinhPosition(cucNumber: number): number {
+  if (cucNumber === 6) return 3;
+  if (cucNumber === 4) return 6;
+  if (cucNumber === 2 || cucNumber === 5) return 9;
+  if (cucNumber === 3) return 12;
+  throw new Error("Không tìm được cung an sao Tràng sinh.");
+}
+
+function getHoaLinhPositions(
+  yearBranchPosition: number,
+  hourBranchPosition: number,
+  amDuongNamNu: 1 | -1
+) {
+  let khoiCungHoaTinh: number;
+  let khoiCungLinhTinh: number;
+
+  if ([3, 7, 11].includes(yearBranchPosition)) {
+    khoiCungHoaTinh = 2;
+    khoiCungLinhTinh = 4;
+  } else if ([1, 5, 9].includes(yearBranchPosition)) {
+    khoiCungHoaTinh = 3;
+    khoiCungLinhTinh = 11;
+  } else if ([6, 10, 2].includes(yearBranchPosition)) {
+    khoiCungHoaTinh = 4;
+    khoiCungLinhTinh = 4;
+  } else if ([12, 4, 8].includes(yearBranchPosition)) {
+    khoiCungHoaTinh = 10;
+    khoiCungLinhTinh = 11;
+  } else {
+    throw new Error("Không thể khởi cung tìm Hỏa-Linh.");
+  }
+
+  if (amDuongNamNu === -1) {
+    return {
+      "Hoa Tinh": dichCung(khoiCungHoaTinh + 1, -hourBranchPosition),
+      "Linh Tinh": dichCung(khoiCungLinhTinh - 1, hourBranchPosition),
+    };
+  }
+
+  return {
+    "Hoa Tinh": dichCung(khoiCungHoaTinh - 1, hourBranchPosition),
+    "Linh Tinh": dichCung(khoiCungLinhTinh + 1, -hourBranchPosition),
+  };
+}
+
+function getThienKhoiPosition(yearStemPosition: number): number {
+  const table = [0, 2, 1, 12, 10, 8, 1, 8, 7, 6, 4];
+  return table[yearStemPosition];
+}
+
+function getThienMaPosition(yearBranchPosition: number): number {
+  const demNghich = yearBranchPosition % 4;
+  if (demNghich === 1) return 3;
+  if (demNghich === 2) return 12;
+  if (demNghich === 3) return 9;
   return 6;
 }
 
-function timPhaToaiPy(chiNamPy: number): number {
-  const r = chiNamPy % 3;
-  if (r === 0) return 6;
-  if (r === 1) return 10;
-  return 2;
+function getVanTinhPositions(hourBranchPosition: number) {
+  const vanKhuc = dichCung(5, hourBranchPosition - 1);
+  const vanXuong = dichCung(11, -(hourBranchPosition - 1));
+
+  return { vanKhuc, vanXuong };
 }
 
-const THIEN_QUAN_PY = [0, 8, 5, 6, 3, 4, 10, 12, 10, 11, 7];
-const THIEN_PHUC_PY = [0, 10, 9, 1, 12, 4, 3, 7, 6, 7, 6];
+function getKhongKiepPositions(hourBranchPosition: number) {
+  const diaKiep = dichCung(12, hourBranchPosition - 1);
+  const diaKhong = dichCung(12, -(hourBranchPosition - 1));
+
+  return { diaKhong, diaKiep };
+}
+
+function getDaoHoaPosition(yearBranchPosition: number) {
+  if ([6, 10, 2].includes(yearBranchPosition)) return 7;
+  if ([9, 1, 5].includes(yearBranchPosition)) return 10;
+  if ([12, 4, 8].includes(yearBranchPosition)) return 1;
+  return 4;
+}
+
+function getTrietPositions(yearStemPosition: number): number[] {
+  if ([1, 6].includes(yearStemPosition)) return [9, 10];
+  if ([2, 7].includes(yearStemPosition)) return [7, 8];
+  if ([3, 8].includes(yearStemPosition)) return [5, 6];
+  if ([4, 9].includes(yearStemPosition)) return [3, 4];
+  return [1, 2];
+}
+
+function getTuanPositions(yearStemIdx: number, yearBranchIdx: number): number[] {
+  const tuanStartBranchIdx = mod12(yearBranchIdx - yearStemIdx);
+  return [
+    toOneBasedBranchIndex(mod12(tuanStartBranchIdx - 2)),
+    toOneBasedBranchIndex(mod12(tuanStartBranchIdx - 1)),
+  ];
+}
+
+function asSinglePosition(
+  starName: string,
+  positionOrPositions: number | number[]
+): number {
+  if (Array.isArray(positionOrPositions)) {
+    throw new Error(`An sao sai: ${starName} phải ở một cung duy nhất.`);
+  }
+
+  return positionOrPositions;
+}
+
+function asPairPositions(
+  starName: string,
+  positionOrPositions: number | number[]
+): [number, number] {
+  if (!Array.isArray(positionOrPositions) || positionOrPositions.length !== 2) {
+    throw new Error(`An sao sai: ${starName} phải chiếm đúng 2 cung.`);
+  }
+
+  return [positionOrPositions[0], positionOrPositions[1]];
+}
+
+function assertPosition(starName: string, actual: number, expected: number, detail: string) {
+  if (actual !== expected) {
+    throw new Error(
+      `An sao sai: ${starName} ở cung ${actual}, nhưng phải ở cung ${expected} (${detail}).`
+    );
+  }
+}
+
+function assertPairPositions(
+  starName: string,
+  actual: [number, number],
+  expected: [number, number],
+  detail: string
+) {
+  if (actual[0] !== expected[0] || actual[1] !== expected[1]) {
+    throw new Error(
+      `An sao sai: ${starName} ở cung [${actual.join(", ")}], nhưng phải ở [${expected.join(", ")}] (${detail}).`
+    );
+  }
+}
+
+function validateMinorStarSymmetries(
+  positions: Record<string, number | number[]>,
+  yearStemIdx: number,
+  yearBranchIdx: number,
+  hourBranchIdx: number
+) {
+  const hourBranchPosition = hourBranchIdx + 1;
+  const yearStemPosition = yearStemIdx + 1;
+  const yearBranchPosition = yearBranchIdx + 1;
+
+  const vanKhuc = asSinglePosition("Van Khuc", positions["Van Khuc"]);
+  const vanXuong = asSinglePosition("Van Xuong", positions["Van Xuong"]);
+  const expectedVanKhuc = dichCung(5, hourBranchPosition - 1);
+  const expectedVanXuong = dichCung(11, -(hourBranchPosition - 1));
+  assertPosition("Van Khuc", vanKhuc, expectedVanKhuc, "đối xứng theo giờ sinh");
+  assertPosition("Van Xuong", vanXuong, expectedVanXuong, "đối xứng theo giờ sinh");
+
+  const diaKhong = asSinglePosition("Dia Khong", positions["Dia Khong"]);
+  const diaKiep = asSinglePosition("Dia Kiep", positions["Dia Kiep"]);
+  const expectedDiaKhong = dichCung(12, -(hourBranchPosition - 1));
+  const expectedDiaKiep = dichCung(12, hourBranchPosition - 1);
+  assertPosition("Dia Khong", diaKhong, expectedDiaKhong, "đối xứng Không-Kiếp theo giờ sinh");
+  assertPosition("Dia Kiep", diaKiep, expectedDiaKiep, "đối xứng Không-Kiếp theo giờ sinh");
+
+  const longTri = asSinglePosition("Long Tri", positions["Long Tri"]);
+  const phuongCac = asSinglePosition("Phuong Cac", positions["Phuong Cac"]);
+  const expectedLongTri = dichCung(5, yearBranchPosition - 1);
+  const expectedPhuongCac = dichCung(2, 2 - expectedLongTri);
+  assertPosition("Long Tri", longTri, expectedLongTri, "an theo địa chi năm sinh");
+  assertPosition("Phuong Cac", phuongCac, expectedPhuongCac, "đối xứng với Long Trì");
+
+  const tuan = asPairPositions("Tuan", positions["Tuan"]);
+  const expectedTuan = getTuanPositions(yearStemIdx, yearBranchIdx) as [number, number];
+  assertPairPositions("Tuan", tuan, expectedTuan, "an theo can chi năm sinh");
+  if (mod12(tuan[1] - tuan[0]) !== 1) {
+    throw new Error(`An sao sai: Tuan phải nằm trên hai cung liền nhau, nhận [${tuan.join(", ")}].`);
+  }
+
+  const triet = asPairPositions("Triet", positions["Triet"]);
+  const expectedTriet = getTrietPositions(yearStemPosition) as [number, number];
+  assertPairPositions("Triet", triet, expectedTriet, "an theo thiên can năm sinh");
+  if (mod12(triet[1] - triet[0]) !== 1) {
+    throw new Error(`An sao sai: Triet phải nằm trên hai cung liền nhau, nhận [${triet.join(", ")}].`);
+  }
+}
 
 function getMinorStarPositions(
   yearStemIdx: number,
-  yearZhiIdx: number,
+  yearBranchIdx: number,
   lunarMonth: number,
   lunarDay: number,
-  hourZhiIdx: number,
-  isMale: boolean,
+  hourBranchIdx: number,
+  gender: FortuneRequest["gender"],
   cucNumber: number,
-  menhIdx: number,
-  thanIdx: number,
-): Record<string, number> {
-  const chiNamPy = yearZhiIdx + 1;
-  const canNamPy = yearStemIdx + 1;
-  const gioSinhPy = hourZhiIdx + 1;
-  const gioiTinhPy = isMale ? 1 : -1;
-  const amDuongCanNam = yearStemIdx % 2 === 0 ? 1 : -1;
-  const amDuongNamNu = gioiTinhPy * amDuongCanNam;
+  menhPosition: number,
+  thanPosition: number,
+  majorStarPositions: Record<string, number>
+): Record<string, number | number[]> {
+  const yearStemPosition = yearStemIdx + 1;
+  const yearBranchPosition = yearBranchIdx + 1;
+  const hourBranchPosition = hourBranchIdx + 1;
+  const amDuongNamNu = getAmDuongNamNu(yearStemIdx, gender);
 
-  const out: Record<string, number> = {};
+  const locTon = getLocTonPosition(yearStemIdx);
+  const trangSinh = getTrangSinhPosition(cucNumber);
+  const { vanKhuc, vanXuong } = getVanTinhPositions(hourBranchPosition);
+  const { diaKhong, diaKiep } = getKhongKiepPositions(hourBranchPosition);
+  const taPhu = dichCung(5, lunarMonth - 1);
+  const huuBat = dichCung(2, 2 - taPhu);
+  const thienKhoi = getThienKhoiPosition(yearStemPosition);
+  const thienMa = getThienMaPosition(yearBranchPosition);
+  const daoHoa = getDaoHoaPosition(yearBranchPosition);
+  const trietPositions = getTrietPositions(yearStemPosition);
+  const tuanPositions = getTuanPositions(yearStemIdx, yearBranchIdx);
 
-  const LOC_TON = [2, 3, 5, 6, 5, 6, 8, 9, 11, 0];
-  const locTonTs = LOC_TON[yearStemIdx] ?? 2;
-  const locTonPy = locTonTs + 1;
+  const hoaByCan: Record<number, Record<"Hoa Loc" | "Hoa Quyen" | "Hoa Khoa" | "Hoa Ky", string>> = {
+    1: { "Hoa Loc": "Liem Trinh", "Hoa Quyen": "Pha Quan", "Hoa Khoa": "Vu Khuc", "Hoa Ky": "Thai Duong" },
+    2: { "Hoa Loc": "Thien Co", "Hoa Quyen": "Thien Luong", "Hoa Khoa": "Tu Vi", "Hoa Ky": "Thai Am" },
+    3: { "Hoa Loc": "Thien Dong", "Hoa Quyen": "Thien Co", "Hoa Khoa": "Van Xuong", "Hoa Ky": "Liem Trinh" },
+    4: { "Hoa Loc": "Thai Am", "Hoa Quyen": "Thien Dong", "Hoa Khoa": "Thien Co", "Hoa Ky": "Cu Mon" },
+    5: { "Hoa Loc": "Tham Lang", "Hoa Quyen": "Thai Am", "Hoa Khoa": "Huu Bat", "Hoa Ky": "Thien Co" },
+    6: { "Hoa Loc": "Vu Khuc", "Hoa Quyen": "Tham Lang", "Hoa Khoa": "Thien Luong", "Hoa Ky": "Van Khuc" },
+    7: { "Hoa Loc": "Thai Duong", "Hoa Quyen": "Vu Khuc", "Hoa Khoa": "Thien Dong", "Hoa Ky": "Thai Am" },
+    8: { "Hoa Loc": "Cu Mon", "Hoa Quyen": "Thai Am", "Hoa Khoa": "Van Xuong", "Hoa Ky": "Thien Luong" },
+    9: { "Hoa Loc": "Thien Luong", "Hoa Quyen": "Tu Vi", "Hoa Khoa": "Thien Phu", "Hoa Ky": "Vu Khuc" },
+    10: { "Hoa Loc": "Pha Quan", "Hoa Quyen": "Cu Mon", "Hoa Khoa": "Thai Am", "Hoa Ky": "Tham Lang" },
+  };
 
-  out["Loc Ton"] = locTonTs;
-  out["Bac Sy"] = locTonTs;
-  out["Kinh Duong"] = pyChiToTs(dichCungPy(locTonPy, 1));
-  out["Da La"] = pyChiToTs(dichCungPy(locTonPy, -1));
+  const hoaConfig = hoaByCan[yearStemPosition];
+  const hoaLinh = getHoaLinhPositions(yearBranchPosition, hourBranchPosition, amDuongNamNu);
 
-  const locVongTen = [
-    "Luc Si", "Thanh Long", "Tieu Hao", "Tuong Quan", "Tau Thu", "Phi Liem",
-    "Hy Than", "Benh Phu", "Dai Hao", "Phuc Binh", "Quan Phu 2",
-  ] as const;
-  for (let k = 1; k <= 11; k++) {
-    out[locVongTen[k - 1]] = pyChiToTs(dichCungPy(locTonPy, k * amDuongNamNu));
-  }
+  const positions = {
+    "Loc Ton": locTon,
+    "Bac Sy": locTon,
+    "Luc Si": dichCung(locTon, 1 * amDuongNamNu),
+    "Thanh Long": dichCung(locTon, 2 * amDuongNamNu),
+    "Tieu Hao": dichCung(locTon, 3 * amDuongNamNu),
+    "Tuong Quan": dichCung(locTon, 4 * amDuongNamNu),
+    "Tau Thu": dichCung(locTon, 5 * amDuongNamNu),
+    "Phi Liem": dichCung(locTon, 6 * amDuongNamNu),
+    "Hy Than": dichCung(locTon, 7 * amDuongNamNu),
+    "Benh Phu": dichCung(locTon, 8 * amDuongNamNu),
+    "Dai Hao": dichCung(locTon, 9 * amDuongNamNu),
+    "Phuc Binh": dichCung(locTon, 10 * amDuongNamNu),
+    "Quan Phu 2": dichCung(locTon, 11 * amDuongNamNu),
+    "Thai Tue": yearBranchPosition,
+    "Thieu Duong": dichCung(yearBranchPosition, 1),
+    "Tang Mon": dichCung(yearBranchPosition, 2),
+    "Thieu Am": dichCung(yearBranchPosition, 3),
+    "Quan Phu 3": dichCung(yearBranchPosition, 4),
+    "Tu Phu": dichCung(yearBranchPosition, 5),
+    "Nguyet Duc": dichCung(yearBranchPosition, 5),
+    "Tue Pha": dichCung(yearBranchPosition, 6),
+    "Long Duc": dichCung(yearBranchPosition, 7),
+    "Bach Ho": dichCung(yearBranchPosition, 8),
+    "Phuc Duc": dichCung(yearBranchPosition, 9),
+    "Thien Duc": dichCung(yearBranchPosition, 9),
+    "Dieu Khach": dichCung(yearBranchPosition, 10),
+    "Truc Phu": dichCung(yearBranchPosition, 11),
+    "Trang Sinh": trangSinh,
+    "Moc Duc": dichCung(trangSinh, 1 * amDuongNamNu),
+    "Quan Doi": dichCung(trangSinh, 2 * amDuongNamNu),
+    "Lam Quan": dichCung(trangSinh, 3 * amDuongNamNu),
+    "De Vuong": dichCung(trangSinh, 4 * amDuongNamNu),
+    "Suy": dichCung(trangSinh, 5 * amDuongNamNu),
+    "Benh": dichCung(trangSinh, 6 * amDuongNamNu),
+    "Tu": dichCung(trangSinh, 7 * amDuongNamNu),
+    "Mo": dichCung(trangSinh, 8 * amDuongNamNu),
+    "Tuyet": dichCung(trangSinh, 9 * amDuongNamNu),
+    "Thai": dichCung(trangSinh, -1 * amDuongNamNu),
+    "Duong": dichCung(trangSinh, -2 * amDuongNamNu),
+    "Da La": dichCung(locTon, -1),
+    "Kinh Duong": dichCung(locTon, 1),
+    "Dia Kiep": diaKiep,
+    "Dia Khong": diaKhong,
+    ...hoaLinh,
+    "Long Tri": dichCung(5, yearBranchPosition - 1),
+    "Phuong Cac": dichCung(2, 2 - dichCung(5, yearBranchPosition - 1)),
+    "Giai Than": dichCung(2, 2 - dichCung(5, yearBranchPosition - 1)),
+    "Ta Phu": taPhu,
+    "Huu Bat": huuBat,
+    "Van Khuc": vanKhuc,
+    "Van Xuong": vanXuong,
+    "Tam Thai": dichCung(taPhu, lunarDay - 1),
+    "Bat Toa": dichCung(huuBat, -(lunarDay - 1)),
+    "An Quang": dichCung(vanXuong, lunarDay - 2),
+    "Thien Quy": dichCung(2, 2 - dichCung(vanXuong, lunarDay - 2)),
+    "Thien Khoi": thienKhoi,
+    "Thien Viet": dichCung(5, 5 - thienKhoi),
+    "Thien Hu": dichCung(7, yearBranchPosition - 1),
+    "Thien Khoc": dichCung(7, -yearBranchPosition + 1),
+    "Thien Tai": dichCung(menhPosition, yearBranchPosition - 1),
+    "Thien Tho": dichCung(thanPosition, yearBranchPosition - 1),
+    "Hong Loan": dichCung(4, -yearBranchPosition + 1),
+    "Thien Hy": dichCung(dichCung(4, -yearBranchPosition + 1), 6),
+    "Dao Hoa": daoHoa,
+    "Thien Quan": [0, 8, 5, 6, 3, 4, 10, 12, 10, 11, 7][yearStemPosition],
+    "Thien Phuc": [0, 10, 9, 1, 12, 4, 3, 7, 6, 7, 6][yearStemPosition],
+    "Thien Hinh": dichCung(10, lunarMonth - 1),
+    "Thien Rieu": dichCung(dichCung(10, lunarMonth - 1), 4),
+    "Thien Y": dichCung(dichCung(10, lunarMonth - 1), 4),
+    "Thien Ma": thienMa,
+    "Hoa Cai": dichCung(thienMa, 2),
+    "Kiep Sat": dichCung(thienMa, 3),
+    "Tuan": tuanPositions,
+    "Triet": trietPositions,
+    "Hoa Loc": majorStarPositions[hoaConfig["Hoa Loc"]] ?? 1,
+    "Hoa Quyen": majorStarPositions[hoaConfig["Hoa Quyen"]] ?? 1,
+    "Hoa Khoa": hoaConfig["Hoa Khoa"] === "Van Xuong" ? vanXuong : hoaConfig["Hoa Khoa"] === "Van Khuc" ? vanKhuc : hoaConfig["Hoa Khoa"] === "Huu Bat" ? huuBat : majorStarPositions[hoaConfig["Hoa Khoa"]] ?? 1,
+    "Hoa Ky": hoaConfig["Hoa Ky"] === "Van Xuong" ? vanXuong : hoaConfig["Hoa Ky"] === "Van Khuc" ? vanKhuc : majorStarPositions[hoaConfig["Hoa Ky"]] ?? 1,
+  };
 
-  const THAI_TUE_RING: [string, number][] = [
-    ["Thai Tue", 0],
-    ["Thieu Duong", 1],
-    ["Thien Khong", 1],
-    ["Tang Mon", 2],
-    ["Thieu Am", 3],
-    ["Quan Phu 3", 4],
-    ["Tu Phu", 5],
-    ["Nguyet Duc", 5],
-    ["Tue Pha", 6],
-    ["Long Duc", 7],
-    ["Bach Ho", 8],
-    ["Phuc Duc Sao", 9],
-    ["Thien Duc", 9],
-    ["Dieu Khach", 10],
-    ["Truc Phu", 11],
-  ];
-  for (const [name, step] of THAI_TUE_RING) {
-    out[name] = pyChiToTs(dichCungPy(chiNamPy, step));
-  }
+  validateMinorStarSymmetries(positions, yearStemIdx, yearBranchIdx, hourBranchIdx);
 
-  const ts0 = timTrangSinhPy(cucNumber);
-  const dir = amDuongNamNu;
-  const trSteps: [string, number][] = [
-    ["Trang Sinh", 0],
-    ["Moc Duc", 1 * dir],
-    ["Quan Doi", 2 * dir],
-    ["Lam Quan", 3 * dir],
-    ["De Vuong", 4 * dir],
-    ["Suy", 5 * dir],
-    ["Benh", 6 * dir],
-    ["Tu", 7 * dir],
-    ["Mo", 8 * dir],
-    ["Tuyet", 9 * dir],
-    ["Thai", -1 * dir],
-    ["Duong Tinh", -2 * dir],
-  ];
-  for (const [name, d] of trSteps) {
-    out[name] = pyChiToTs(dichCungPy(ts0, d));
-  }
-
-  const vanKhucPy = dichCungPy(5, gioSinhPy - 1);
-  const vanXuongPy = dichCungPy(2, 2 - vanKhucPy);
-  out["Van Khuc"] = pyChiToTs(vanKhucPy);
-  out["Van Xuong"] = pyChiToTs(vanXuongPy);
-
-  const taPhuPy = dichCungPy(5, lunarMonth - 1);
-  const huuBatPy = dichCungPy(2, 2 - taPhuPy);
-  out["Ta Phu"] = pyChiToTs(taPhuPy);
-  out["Huu Bat"] = pyChiToTs(huuBatPy);
-
-  const diaKiepPy = dichCungPy(11, gioSinhPy);
-  const diaKhongPy = dichCungPy(12, 12 - diaKiepPy);
-  out["Dia Kiep"] = pyChiToTs(diaKiepPy);
-  out["Dia Khong"] = pyChiToTs(diaKhongPy);
-
-  const hongLoanPy = dichCungPy(4, -chiNamPy + 1);
-  out["Hong Loan"] = pyChiToTs(hongLoanPy);
-  out["Thien Hy"] = pyChiToTs(dichCungPy(hongLoanPy, 6));
-
-  out["Thien Hu"] = pyChiToTs(dichCungPy(7, chiNamPy - 1));
-  out["Thien Khoc"] = pyChiToTs(dichCungPy(7, -chiNamPy + 1));
-
-  const menhPy = menhIdx + 1;
-  const thanPy = thanIdx + 1;
-  out["Thien Tai"] = pyChiToTs(dichCungPy(menhPy, chiNamPy - 1));
-  out["Thien Tho"] = pyChiToTs(dichCungPy(thanPy, chiNamPy - 1));
-
-  const longTriPy = dichCungPy(5, chiNamPy - 1);
-  const phuongCacPy = dichCungPy(2, 2 - longTriPy);
-  out["Long Tri"] = pyChiToTs(longTriPy);
-  out["Phuong Cac"] = pyChiToTs(phuongCacPy);
-  out["Giai Than"] = pyChiToTs(phuongCacPy);
-
-  const tamThaiPy = dichCungPy(5, lunarMonth + lunarDay - 2);
-  out["Tam Thai"] = pyChiToTs(tamThaiPy);
-  out["Bat Toa"] = pyChiToTs(dichCungPy(2, 2 - tamThaiPy));
-
-  const anQuangPy = dichCungPy(vanXuongPy, lunarDay - 2);
-  out["An Quang"] = pyChiToTs(anQuangPy);
-  out["Thien Quy"] = pyChiToTs(dichCungPy(2, 2 - anQuangPy));
-
-  out["Thien Quan"] = pyChiToTs(THIEN_QUAN_PY[canNamPy] ?? 8);
-  out["Thien Phuc"] = pyChiToTs(THIEN_PHUC_PY[canNamPy] ?? 10);
-
-  const thienHinhPy = dichCungPy(10, lunarMonth - 1);
-  const thienRieuPy = dichCungPy(thienHinhPy, 4);
-  out["Thien Hinh"] = pyChiToTs(thienHinhPy);
-  out["Thien Rieu"] = pyChiToTs(thienRieuPy);
-  out["Thien Y"] = pyChiToTs(thienRieuPy);
-
-  const coThanPy = timCoThanPy(chiNamPy);
-  out["Co Than"] = pyChiToTs(coThanPy);
-  out["Qua Tu"] = pyChiToTs(dichCungPy(coThanPy, -4));
-
-  const thienMaPy = timThienMaPy(chiNamPy);
-  out["Thien Ma"] = pyChiToTs(thienMaPy);
-  out["Hoa Cai"] = pyChiToTs(dichCungPy(thienMaPy, 2));
-  const kiepPy = dichCungPy(thienMaPy, 3);
-  out["Kiep Sat"] = pyChiToTs(kiepPy);
-  out["Dao Hoa"] = pyChiToTs(dichCungPy(kiepPy, 4));
-
-  out["Pha Toai"] = pyChiToTs(timPhaToaiPy(chiNamPy));
-  out["Thien La"] = pyChiToTs(5);
-  out["Dia Vong"] = pyChiToTs(11);
-
-  const KHOI_PY = [0, 2, 1, 12, 10, 8, 1, 8, 7, 6, 4];
-  const khoiPy = KHOI_PY[canNamPy] ?? 2;
-  out["Thien Khoi"] = pyChiToTs(khoiPy);
-  out["Thien Viet"] = pyChiToTs(dichCungPy(5, 5 - khoiPy));
-
-  let kHoi: number;
-  let kLinh: number;
-  if ([3, 7, 11].includes(chiNamPy)) { kHoi = 2; kLinh = 4; }
-  else if ([1, 5, 9].includes(chiNamPy)) { kHoi = 3; kLinh = 11; }
-  else if ([6, 10, 2].includes(chiNamPy)) { kHoi = 11; kLinh = 4; }
-  else if ([12, 4, 8].includes(chiNamPy)) { kHoi = 10; kLinh = 11; }
-  else throw new Error("Chi năm không hợp lệ cho Hỏa Linh");
-  let hoaPy: number;
-  let linhPy: number;
-  if (gioiTinhPy * amDuongCanNam === -1) {
-    hoaPy = dichCungPy(kHoi + 1, -gioSinhPy);
-    linhPy = dichCungPy(kLinh - 1, gioSinhPy);
-  } else {
-    hoaPy = dichCungPy(kHoi - 1, gioSinhPy);
-    linhPy = dichCungPy(kLinh + 1, -gioSinhPy);
-  }
-  out["Hoa Tinh"] = pyChiToTs(hoaPy);
-  out["Linh Tinh"] = pyChiToTs(linhPy);
-
-  return out;
+  return positions;
 }
 
-// ─── Build 12 cung ────────────────────────────────────────────────────────────
-
-const MAJOR_ELEMENTS: Record<string, string> = {
-  "Tu Vi":"Tho","Thien Co":"Moc","Thai Duong":"Hoa","Vu Khuc":"Kim",
-  "Thien Dong":"Thuy","Liem Trinh":"Hoa","Thien Phu":"Tho","Thai Am":"Thuy",
-  "Tham Lang":"Moc","Cu Mon":"Thuy","Thien Tuong":"Thuy","Thien Luong":"Tho",
-  "That Sat":"Kim","Pha Quan":"Thuy",
-};
-const MINOR_ELEMENTS: Record<string, string> = {
-  "Loc Ton":"Tho","Bac Sy":"Moc","Kinh Duong":"Kim","Da La":"Kim",
-  "Luc Si":"Kim","Thanh Long":"Moc","Tieu Hao":"Hoa","Tuong Quan":"Hoa",
-  "Tau Thu":"Hoa","Phi Liem":"Kim","Hy Than":"Hoa","Benh Phu":"Thuy",
-  "Dai Hao":"Hoa","Phuc Binh":"Thuy","Quan Phu 2":"Kim",
-  "Thai Tue":"Tho","Thieu Duong":"Hoa","Thien Khong":"Hoa","Tang Mon":"Thuy",
-  "Thieu Am":"Thuy","Quan Phu 3":"Kim","Tu Phu":"Thuy","Nguyet Duc":"Kim",
-  "Tue Pha":"Kim","Long Duc":"Moc","Bach Ho":"Kim","Phuc Duc Sao":"Moc",
-  "Thien Duc":"Hoa","Dieu Khach":"Thuy","Truc Phu":"Kim",
-  "Trang Sinh":"Moc","Moc Duc":"Moc","Quan Doi":"Kim","Lam Quan":"Kim",
-  "De Vuong":"Tho","Suy":"Thuy","Benh":"Thuy","Tu":"Thuy","Mo":"Tho",
-  "Tuyet":"Thuy","Thai":"Moc","Duong Tinh":"Moc",
-  "Thien Khoi":"Hoa","Thien Viet":"Hoa",
-  "Van Xuong":"Kim","Van Khuc":"Thuy",
-  "Ta Phu":"Tho","Huu Bat":"Thuy","Thien Ma":"Hoa",
-  "Hoa Loc":"Moc","Hoa Quyen":"Hoa","Hoa Khoa":"Thuy","Hoa Ky":"Thuy",
-  "Dia Khong":"Hoa","Dia Kiep":"Hoa","Hoa Tinh":"Hoa","Linh Tinh":"Hoa",
-  "Dao Hoa":"Moc","Hong Loan":"Thuy","Thien Hy":"Hoa",
-  "Long Tri":"Hoa","Phuong Cac":"Moc","Giai Than":"Moc",
-  "Tam Thai":"Kim","Bat Toa":"Kim","An Quang":"Kim","Thien Quy":"Moc",
-  "Thien Tai":"Kim","Thien Tho":"Tho","Thien Hu":"Thuy","Thien Khoc":"Thuy",
-  "Thien Quan":"Hoa","Thien Phuc":"Moc","Thien Hinh":"Hoa","Thien Rieu":"Thuy",
-  "Thien Y":"Moc","Co Than":"Kim","Qua Tu":"Kim","Hoa Cai":"Moc","Kiep Sat":"Kim",
-  "Pha Toai":"Kim","Thien La":"Hoa","Dia Vong":"Thuy",
-};
-
-// Nạp Âm cung Mệnh (dùng Can cung Mệnh và Chi cung Mệnh)
-// Cung Mệnh có Can = Can năm + offset theo tháng (phức tạp)
-// Đơn giản: dùng Nạp Âm năm sinh để xác định Cục (đã làm ở trên)
-// Nạp Âm cung Mệnh dùng để hiển thị thêm thông tin
-
 function palaceNote(name: string, stars: string[]): string {
-  const s = stars.length > 0 ? stars.join(", ") : "vô chính diệu";
-  const notes: Record<string, string> = {
-    "Menh":       `Cung Mệnh chủ về cốt cách và khí chất. Chính tinh: ${s}.`,
-    "Quan Loc":   `Cung Quan Lộc quyết định sự nghiệp và vị thế. Chính tinh: ${s}.`,
-    "Tai Bach":   `Cung Tài Bạch phản ánh tài lộc và dòng tiền. Chính tinh: ${s}.`,
-    "Phu The":    `Cung Phu Thê cho biết duyên phận tình cảm. Chính tinh: ${s}.`,
-    "Thien Di":   `Cung Thiên Di thể hiện vận hội ngoài xa. Chính tinh: ${s}.`,
-    "Tu Tuc":     `Cung Tử Tức liên quan con cái và sáng tạo. Chính tinh: ${s}.`,
-    "No Boc":     `Cung Nô Bộc phản ánh quan hệ cấp dưới và đối tác. Chính tinh: ${s}.`,
-    "Dien Trach": `Cung Điền Trạch cho biết bất động sản và gia đình. Chính tinh: ${s}.`,
-    "Phuc Duc":   `Cung Phúc Đức thể hiện phúc phần và tâm linh. Chính tinh: ${s}.`,
-    "Phu Mau":    `Cung Phụ Mẫu phản ánh quan hệ cha mẹ. Chính tinh: ${s}.`,
-    "Huynh De":   `Cung Huynh Đệ cho biết anh em và bạn bè. Chính tinh: ${s}.`,
-    "Tat Ach":    `Cung Tật Ách liên quan sức khỏe và tai nạn. Chính tinh: ${s}.`,
+  const joined = stars.length > 0 ? stars.join(", ") : "vô chính diệu";
+  const map: Record<string, string> = {
+    Menh: `Cung Mệnh chủ về cốt cách. Chính tinh: ${joined}.`,
+    "Quan Loc": `Cung Quan lộc phản ánh công việc và sự nghiệp. Chính tinh: ${joined}.`,
+    "Tai Bach": `Cung Tài Bạch phản ánh dòng tiền và khả năng tích lũy. Chính tinh: ${joined}.`,
+    "Phu The": `Cung Phu thê cho biết duyên phận và cách gắn kết. Chính tinh: ${joined}.`,
+    "Thien Di": `Cung Thiên di thể hiện vận hội khi ra ngoài. Chính tinh: ${joined}.`,
   };
-  return notes[name] ?? `Cung ${name}: ${s}.`;
+  return map[name] ?? `Cung ${name}: ${joined}.`;
 }
 
 function buildPalaces(
-  menhIdx: number, thanIdx: number, tuViIdx: number,
-  yearStemIdx: number, yearZhiIdx: number,
-  lunarMonth: number, lunarDay: number,
-  hourZhiIdx: number,
-  isMale: boolean,
-  cucNumber: number,
+  menhIdx: number,
+  thanIdx: number,
+  yearStemIdx: number,
+  yearBranchIdx: number,
+  lunarMonth: number,
+  lunarDay: number,
+  hourBranchIdx: number,
+  gender: FortuneRequest["gender"],
+  cucNumber: number
 ): TuViPalace[] {
-  const majorPos  = getMajorStarPositions(tuViIdx);
-  const minorPos  = getMinorStarPositions(
-    yearStemIdx, yearZhiIdx, lunarMonth, lunarDay, hourZhiIdx, isMale, cucNumber, menhIdx, thanIdx,
+  const menhPosition = toOneBasedBranchIndex(menhIdx);
+  const thanPosition = toOneBasedBranchIndex(thanIdx);
+  const tuViPosition = getTuViPosition(cucNumber, lunarDay);
+  const majorStarPositions = getMajorStarPositions(tuViPosition);
+  const minorStarPositions = getMinorStarPositions(
+    yearStemIdx,
+    yearBranchIdx,
+    lunarMonth,
+    lunarDay,
+    hourBranchIdx,
+    gender,
+    cucNumber,
+    menhPosition,
+    thanPosition,
+    majorStarPositions
   );
-  const tuHoa     = TU_HOA[yearStemIdx] ?? TU_HOA[0];
 
-  // Tạo 12 cung
   const palaces: TuViPalace[] = Array.from({ length: 12 }, (_, offset) => {
-    const bIdx = mod12(menhIdx + offset);
+    const branchIdx = mod12(menhIdx + offset);
     return {
       name: PALACE_NAMES[offset],
-      branch: BRANCHES_EN[bIdx],
-      element: "Tho", // sẽ cập nhật
+      branch: BRANCH_EN[branchIdx],
+      element: PALACE_ELEMENTS[branchIdx],
       isLifePalace: offset === 0,
-      isBodyPalace: bIdx === thanIdx,
+      isBodyPalace: branchIdx === thanIdx,
       majorStars: [],
       minorStars: [],
       note: "",
     };
   });
 
-  // Điền chính tinh
-  for (const [starName, starBranchIdx] of Object.entries(majorPos)) {
-    const palace = palaces.find(p => BRANCHES_EN.indexOf(p.branch) === starBranchIdx);
-    if (palace) {
-      palace.majorStars.push({
-        name: starName, type: "chinh_tinh",
-        quality: getQuality(starName, starBranchIdx),
-        element: MAJOR_ELEMENTS[starName] ?? "Tho",
-      });
-    }
+  for (const starName of MAJOR_STAR_ORDER) {
+    const position = majorStarPositions[starName];
+    const branchIdx = fromOneBasedBranchIndex(position);
+    const palace = palaces.find((item) => BRANCH_EN.indexOf(item.branch) === branchIdx);
+    if (!palace) continue;
+
+    palace.majorStars.push({
+      name: starName,
+      type: "chinh_tinh",
+      quality: getQuality(starName, branchIdx),
+      element: MAJOR_ELEMENTS[starName] ?? "Thổ",
+    });
   }
 
-  // Điền phụ tinh
-  for (const [starName, starBranchIdx] of Object.entries(minorPos)) {
-    const palace = palaces.find(p => BRANCHES_EN.indexOf(p.branch) === starBranchIdx);
-    if (palace) {
+  for (const [starName, positionOrPositions] of Object.entries(minorStarPositions)) {
+    const positions = Array.isArray(positionOrPositions) ? positionOrPositions : [positionOrPositions];
+
+    for (const position of positions) {
+      const branchIdx = fromOneBasedBranchIndex(position);
+      const palace = palaces.find((item) => BRANCH_EN.indexOf(item.branch) === branchIdx);
+      if (!palace) continue;
+
       palace.minorStars.push({
-        name: starName, type: "phu_tinh",
+        name: starName,
+        type: "phu_tinh",
         quality: "binh_hoa",
-        element: MINOR_ELEMENTS[starName] ?? "Tho",
+        element: MINOR_ELEMENTS[starName] ?? "Thổ",
       });
     }
   }
 
-  // Tứ Hóa: tìm cung chứa sao được hóa và thêm sao hóa vào đó
-  const hoaMap: Record<string, string> = {
-    [tuHoa.loc]:   "Hoa Loc",
-    [tuHoa.quyen]: "Hoa Quyen",
-    [tuHoa.khoa]:  "Hoa Khoa",
-    [tuHoa.ky]:    "Hoa Ky",
-  };
-  for (const palace of palaces) {
-    for (const major of palace.majorStars) {
-      const hoaName = hoaMap[major.name];
-      if (hoaName && !palace.minorStars.find(s => s.name === hoaName)) {
-        palace.minorStars.unshift({
-          name: hoaName, type: "phu_tinh",
-          quality: "binh_hoa",
-          element: MINOR_ELEMENTS[hoaName] ?? "Tho",
-        });
-      }
-    }
-  }
-
-  return palaces.map(p => ({
-    ...p,
-    note: palaceNote(p.name, p.majorStars.map(s => s.name)),
+  return palaces.map((palace) => ({
+    ...palace,
+    note: palaceNote(palace.name, palace.majorStars.map((star) => star.name)),
   }));
 }
 
-// ─── Đại hạn (lasotuvi DiaBan.nhapDaiHan: tuổi khởi = cục + khoảng cách×10)
-// Dương Nam / Âm Nữ: thuận; Âm Nam / Dương Nữ: nghịch — theo Âm/Dương **chi** năm
-
 function buildDecadeCycles(
+  lunarHour: TymeLunarHour,
   palaces: TuViPalace[],
   cucNumber: number,
-  isMale: boolean,
-  isYangChi: boolean,
+  gender: TymeGender
 ): TuViDecadeCycle[] {
-  const isForward = (isMale && isYangChi) || (!isMale && !isYangChi);
+  const solar = lunarHour.getSolarTime();
+  const childLimit = ChildLimit.fromSolarTime(solar, gender);
+  const startAge = Math.max(1, childLimit.getYearCount() + 1);
 
-  return palaces.map((palace, i) => {
-    const idx = isForward ? i : (12 - i) % 12;
-    const p   = palaces[idx];
-    const s   = cucNumber + i * 10;
-    const stars = p.majorStars.slice(0, 2).map(x => x.name).join(" + ") || "bộ cục";
+  return palaces.map((palace, index) => {
+    const cycleStart = startAge + index * 10;
+    const stars = palace.majorStars.slice(0, 2).map((star) => star.name).join(" + ") || "bố cục";
+    const branchLabel = BRANCH_VI[BRANCH_EN.indexOf(palace.branch)] ?? palace.branch;
+
     return {
-      palace: p.name,
-      branch: p.branch,
-      startAge: s,
-      endAge: s + 9,
-      focus: `Đại hạn ${p.name} (${BRANCHES_VI[BRANCHES_EN.indexOf(p.branch)] ?? p.branch}): ${stars}. Cục ${cucNumber}.`,
+      palace: palace.name,
+      branch: palace.branch,
+      startAge: cycleStart,
+      endAge: cycleStart + 9,
+      focus: `Đại hạn tại ${palace.name} (${branchLabel}), nổi bật với ${stars}. Cục số: ${cucNumber}.`,
     };
   });
 }
 
-// ─── Phân tích & Tóm tắt ──────────────────────────────────────────────────────
-
 function buildAnalysis(palaces: TuViPalace[]) {
-  const g = (n: string) => palaces.find(p => p.name === n);
-  const s = (p: TuViPalace | undefined) =>
-    p?.majorStars.map(x => x.name).join(", ") || "vô chính diệu";
-  const bv = (b: string) => BRANCHES_VI[BRANCHES_EN.indexOf(b)] ?? b;
+  const getPalace = (name: string) => palaces.find((palace) => palace.name === name);
+  const starList = (palace: TuViPalace | undefined) => palace?.majorStars.map((star) => star.name).join(", ") || "vô chính diệu";
 
   return {
     coreTraits: [
-      `Mệnh tại ${bv(g("Menh")?.branch ?? "")}: ${s(g("Menh"))}.`,
-      `Thân cư ${g(palaces.find(p => p.isBodyPalace)?.name ?? "Menh")?.name ?? "Mệnh"}.`,
-      `Phúc Đức và Thiên Di cần đối chiếu để biết phúc phần và quý nhân.`,
+      `Mệnh tại ${getPalace("Menh")?.branch}: ${starList(getPalace("Menh"))}.`,
+      `Thân cư ${palaces.find((palace) => palace.isBodyPalace)?.name ?? "Menh"}.`,
+      "Nên đối chiếu thêm Phúc đức và Thiên di để đọc chiều sâu phúc phần.",
     ],
     career: [
-      `Quan Lộc (${bv(g("Quan Loc")?.branch ?? "")}): ${s(g("Quan Loc"))}.`,
-      `Tài Bạch (${bv(g("Tai Bach")?.branch ?? "")}): ${s(g("Tai Bach"))}.`,
-      `Nô Bộc và Thiên Di cho biết chất lượng đối tác.`,
+      `Quan lộc: ${starList(getPalace("Quan Loc"))}.`,
+      `Tài bạch: ${starList(getPalace("Tai Bach"))}.`,
     ],
     relationship: [
-      `Phu Thê (${bv(g("Phu The")?.branch ?? "")}): ${s(g("Phu The"))}.`,
-      `Thiên Di (${bv(g("Thien Di")?.branch ?? "")}): ${s(g("Thien Di"))}.`,
+      `Phu thê: ${starList(getPalace("Phu The"))}.`,
+      `Thiên di: ${starList(getPalace("Thien Di"))}.`,
     ],
   };
 }
 
-function buildSummary(r: TuViEngineResult): string[] {
-  const g  = (n: string) => r.palaces.find(p => p.name === n);
-  const s  = (p: TuViPalace | undefined) => p?.majorStars.map(x => x.name).join(", ") || "vô chính diệu";
-  const bv = (b: string) => BRANCHES_VI[BRANCHES_EN.indexOf(b)] ?? b;
+function buildSummary(result: TuViEngineResult): string[] {
+  const findPalace = (name: string) => result.palaces.find((palace) => palace.name === name);
+  const starList = (palace: TuViPalace | undefined) => palace?.majorStars.map((star) => star.name).join(", ") || "vô chính diệu";
+
   return [
-    `${r.profile.fullName || "Bạn"}: Mệnh ${bv(r.overview.menhBranch)}, Thân ${bv(r.overview.thanBranch)}, ${r.overview.cuc}.`,
-    `Cung Mệnh: ${s(g("Menh"))}.`,
-    `Quan Lộc: ${s(g("Quan Loc"))}. Tài Bạch: ${s(g("Tai Bach"))}.`,
-    `Phu Thê: ${s(g("Phu The"))}.`,
+    `${result.profile.fullName || "Bạn"} có Mệnh tại ${result.overview.menhBranch}, Thân tại ${result.overview.thanBranch}, thuộc ${result.overview.cuc}.`,
+    `Cung Mệnh: ${starList(findPalace("Menh"))}.`,
+    `Quan lộc: ${starList(findPalace("Quan Loc"))}. Tài bạch: ${starList(findPalace("Tai Bach"))}.`,
+    `Phu thê: ${starList(findPalace("Phu The"))}.`,
   ];
 }
 
-// ─── Export chính ─────────────────────────────────────────────────────────────
-
 export function calculateTuVi(input: FortuneRequest): TuViEngineResult {
-  const lunar = buildLunar(input);
+  LunarHour.provider = input.eightCharProviderSect === 1 ? provider1 : provider2;
 
-  const yearStemIdx  = lunar.getYearGanIndex();   // 0=Giáp..9=Quý
-  const yearZhiIdx   = lunar.getYearZhiIndex();   // 0=Tý..11=Hợi
-  const dayStemIdx   = lunar.getDayGanIndex();
-  const dayZhiIdx    = lunar.getDayZhiIndex();
-  const hourZhiIdx   = lunar.getTimeZhiIndex();   // 0=Tý..11=Hợi (mỗi 2 giờ)
-  const lunarMonth   = lunar.getMonth();
-  const lunarDay     = lunar.getDay();
-  const isMale      = input.gender === "nam";
-  const isYangYear  = yearStemIdx % 2 === 0; // Can dương (hiển thị)
-  const isYangChi   = yearZhiIdx % 2 === 0;  // Chi dương: Tý, Dần, Thìn… (đại hạn)
+  const lunarHour = buildLunarHour(input);
+  const eightChar = lunarHour.getEightChar();
 
-  const menhIdx = getMenhIdx(lunarMonth, hourZhiIdx);
-  const thanIdx = getThanIdx(lunarMonth, hourZhiIdx);
-  const cuc     = timCuc(menhIdx + 1, yearStemIdx + 1);
-  const tuViIdx = pyChiToTs(timTuViPy(lunarDay, cuc.number));
+  const yearStemIdx = eightChar.getYear().getHeavenStem().getIndex();
+  const yearBranchIdx = eightChar.getYear().getEarthBranch().getIndex();
+  const dayStemIdx = eightChar.getDay().getHeavenStem().getIndex();
+  const dayBranchIdx = eightChar.getDay().getEarthBranch().getIndex();
+  const hourBranchIdx = lunarHour.getSixtyCycle().getEarthBranch().getIndex();
+  const lunarMonth = lunarHour.getMonth();
+  const lunarDay = lunarHour.getDay();
+
+  const menhIdx = getMenhIdx(lunarMonth, hourBranchIdx);
+  const thanIdx = getThanIdx(lunarMonth, hourBranchIdx);
+  const menhCanIdx = getMenhCanIdx(yearStemIdx, menhIdx);
+  const cuc = getCuc(menhCanIdx, menhIdx);
+  const gender: TymeGender = input.gender === "nu" ? 0 : 1;
 
   const palaces = buildPalaces(
-    menhIdx, thanIdx, tuViIdx,
-    yearStemIdx, yearZhiIdx,
-    lunarMonth, lunarDay, hourZhiIdx,
-    isMale,
-    cuc.number,
+    menhIdx,
+    thanIdx,
+    yearStemIdx,
+    yearBranchIdx,
+    lunarMonth,
+    lunarDay,
+    hourBranchIdx,
+    input.gender,
+    cuc.number
   );
 
-  const canChiYear = `${STEMS_VI[yearStemIdx] ?? yearStemIdx} ${BRANCHES_VI[yearZhiIdx] ?? yearZhiIdx}`;
-  const canChiDay  = `${STEMS_VI[dayStemIdx]  ?? dayStemIdx}  ${BRANCHES_VI[dayZhiIdx]  ?? dayZhiIdx}`;
+  const canChiYear = `${STEMS_VI[yearStemIdx] ?? yearStemIdx} ${BRANCH_VI[yearBranchIdx] ?? yearBranchIdx}`;
+  const canChiDay = `${STEMS_VI[dayStemIdx] ?? dayStemIdx} ${BRANCH_VI[dayBranchIdx] ?? dayBranchIdx}`;
 
   const result: TuViEngineResult = {
     profile: {
-      fullName:      input.fullName.trim(),
-      genderLabel:   isMale ? "Nam" : "Nữ",
-      solarDateTime: `${input.birthDate} ${input.birthTime}`,
-      lunarDateTime: `${lunarMonth}/${lunarDay} âm lịch`,
-      timezone:      input.timezone,
+      fullName: input.fullName.trim(),
+      genderLabel: input.gender === "nu" ? "Nữ" : "Nam",
+      solarDateTime: String(lunarHour.getSolarTime()),
+      lunarDateTime: String(lunarHour),
+      timezone: input.timezone,
     },
     overview: {
-      chartType:   "Tử Vi Đẩu Số Bắc Tông",
-      zodiac:      lunar.getYearShengXiao(),
-      amDuong:     isYangYear ? "Dương" : "Âm",
-      cuc:         cuc.name,
-      cucNumber:   cuc.number,
-      menhPalace:  "Menh",
-      thanPalace:  palaces.find(p => p.isBodyPalace)?.name ?? "Menh",
-      menhBranch:  BRANCHES_EN[menhIdx],
-      thanBranch:  BRANCHES_EN[thanIdx],
+      chartType: "Tử vi đẩu số",
+      zodiac: String(eightChar.getYear().getEarthBranch().getZodiac()),
+      amDuong: eightChar.getYear().getHeavenStem().getYinYang() === 1 ? "Dương" : "Âm",
+      cuc: cuc.name,
+      cucNumber: cuc.number,
+      menhPalace: "Menh",
+      thanPalace: palaces.find((palace) => palace.isBodyPalace)?.name ?? "Menh",
+      menhBranch: BRANCH_EN[menhIdx],
+      thanBranch: BRANCH_EN[thanIdx],
       canChiYear,
       canChiDay,
-      menhChu:     BRANCHES_EN[menhIdx],
-      thanChu:     BRANCHES_EN[thanIdx],
+      menhChu: BRANCH_EN[menhIdx],
+      thanChu: BRANCH_EN[thanIdx],
     },
     palaces,
     keyStars: palaces
-      .filter(p => p.name === "Menh" || p.name === "Quan Loc" || p.name === "Tai Bach" || p.isBodyPalace)
-      .flatMap(p => p.majorStars.slice(0, 2).map(s => s.name)),
-    decadeCycles: buildDecadeCycles(palaces, cuc.number, isMale, isYangChi),
+      .filter((palace) => palace.name === "Menh" || palace.name === "Quan Loc" || palace.name === "Tai Bach" || palace.isBodyPalace)
+      .flatMap((palace) => palace.majorStars.slice(0, 2).map((star) => star.name)),
+    decadeCycles: buildDecadeCycles(lunarHour, palaces, cuc.number, gender),
     summary: [],
     analysis: buildAnalysis(palaces),
   };
@@ -677,3 +868,4 @@ export function calculateTuVi(input: FortuneRequest): TuViEngineResult {
 }
 
 export const calculateBazi = calculateTuVi;
+

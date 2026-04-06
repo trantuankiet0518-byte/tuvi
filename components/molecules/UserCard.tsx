@@ -11,23 +11,15 @@ interface UserCardProps {
 
 export default function UserCard({ name, email, role, avatarSrc, status }: UserCardProps) {
   return (
-    <div className="flex items-center gap-3 p-4 bg-surface-container-low rounded-xl hover:border-primary/20 transition-all duration-300">
+    <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-transparent p-4 transition-all duration-300 backdrop-blur-xl hover:border-primary/20">
       <Avatar src={avatarSrc} fallback={name} size="md" />
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-on-surface truncate">{name}</p>
-        {email && (
-          <p className="text-xs text-on-surface-variant truncate">{email}</p>
-        )}
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-semibold text-on-surface">{name}</p>
+        {email && <p className="truncate text-xs text-on-surface-variant">{email}</p>}
       </div>
       <div className="flex flex-col items-end gap-1">
-        {role && (
-          <Badge variant="outline">{role}</Badge>
-        )}
-        {status && (
-          <Badge variant={status === "active" ? "success" : "secondary"}>
-            {status}
-          </Badge>
-        )}
+        {role && <Badge variant="outline">{role}</Badge>}
+        {status && <Badge variant={status === "active" ? "success" : "secondary"}>{status}</Badge>}
       </div>
     </div>
   );

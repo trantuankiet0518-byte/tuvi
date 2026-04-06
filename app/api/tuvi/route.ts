@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { calculateTuVi } from "@/lib/bazi/engine";
+import { calculateTuVi } from "../bazi/engine";
 import type { FortuneRequest } from "@/lib/bazi/types";
 
 export async function POST(request: Request) {

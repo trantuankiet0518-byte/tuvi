@@ -1,6 +1,7 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { fontVariables } from "@/app/fonts";
 import { routing } from "@/i18n/routing";
 
 export function generateStaticParams() {
@@ -23,17 +24,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className="dark">
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang={locale} className={`${fontVariables} dark scroll-smooth`}>
       <body className="antialiased bg-background text-foreground">
         <NextIntlClientProvider messages={messages}>
           {children}
