@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
-import Navbar from "@/components/organisms/Navbar";
-import Sidebar from "@/components/organisms/Sidebar";
+import { Navbar, Sidebar } from "@/components/organisms";
 
 export default function ViewsLayout({ children }: { children: ReactNode }) {
   return (

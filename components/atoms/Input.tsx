@@ -1,4 +1,4 @@
-import { ChangeEvent, FocusEvent, InputHTMLAttributes, forwardRef, memo, useCallback } from "react";
+import { InputHTMLAttributes, forwardRef } from "react";
 import Icon from "./Icon";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -7,28 +7,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const InputBase = forwardRef<HTMLInputElement, InputProps>(
-  ({ icon, error, className = "", onBlur, onChange, onFocus, ...props }, ref) => {
-    const handleChange = useCallback(
-      (event: ChangeEvent<HTMLInputElement>) => {
-        onChange?.(event);
-      },
-      [onChange]
-    );
-
-    const handleBlur = useCallback(
-      (event: FocusEvent<HTMLInputElement>) => {
-        onBlur?.(event);
-      },
-      [onBlur]
-    );
-
-    const handleFocus = useCallback(
-      (event: FocusEvent<HTMLInputElement>) => {
-        onFocus?.(event);
-      },
-      [onFocus]
-    );
-
+  ({ icon, error, className = "", ...props }, ref) => {
     return (
       <div className="relative">
         {icon ? (
@@ -49,9 +28,6 @@ const InputBase = forwardRef<HTMLInputElement, InputProps>(
             ${icon ? "pl-11 pr-4" : "px-4"}
             ${className}
           `}
-          onBlur={handleBlur}
-          onChange={handleChange}
-          onFocus={handleFocus}
           {...props}
         />
       </div>
@@ -61,8 +37,4 @@ const InputBase = forwardRef<HTMLInputElement, InputProps>(
 
 InputBase.displayName = "Input";
 
-const Input = memo(InputBase);
-
-Input.displayName = "Input";
-
-export default Input;
+export default InputBase;

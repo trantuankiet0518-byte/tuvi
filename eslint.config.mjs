@@ -14,7 +14,9 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     "bazi-mcp/**",
     "clone/**",
+    "everything-claude-code/**",
     "ui-ux-pro-max-skill/**",
+    "test.ts",
   ]),
 ]);
 

@@ -9,15 +9,16 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "cantian-tymext": "^0.0.26",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
-    "i18next": "^26.0.3",
+    "framer-motion": "^12.38.0",
+    "hls.js": "^1.6.15",
+    "lucide-react": "^1.7.0",
+    "motion": "^12.23.24",
     "next": "16.2.2",
     "next-intl": "^4.9.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "react-i18next": "^17.0.2",
     "tyme4ts": "^1.4.5"
   },
   "devDependencies": {

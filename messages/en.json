@@ -12,39 +12,55 @@
     "search": "Search...",
     "save": "Save",
     "cancel": "Cancel",
-    "back": "Back"
+    "back": "Back",
+    "noData": "No data"
   },
   "auth": {
+    "shell": {
+      "brand": "Tử Vi Alchemist",
+      "subtitle": "Secure access"
+    },
     "login": {
       "title": "Welcome Back",
-      "subtitle": "Enter your credentials to align your path",
+      "subtitle": "Enter your details to continue your journey",
       "email": "Email Address",
-      "password": "Secret Key",
+      "password": "Password",
       "forgotPassword": "Forgot Password?",
       "submit": "Sign In",
       "orContinueWith": "Or continue with",
       "noAccount": "Don't have an account?",
-      "signUp": "Sign Up"
+      "signUp": "Sign Up",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "defaultName": "Tu Vi"
     },
     "register": {
+      "badge": "Register",
       "title": "Create your celestial profile",
-      "subtitle": "Chart your destiny with the ancient wisdom of Tử Vi.",
+      "subtitle": "Explore your destiny with the ancient wisdom of Zi Wei Dou Shu.",
       "fullName": "Full Name",
+      "fullNamePlaceholder": "Nguyen Van A",
       "email": "Email Address",
+      "emailPlaceholder": "hello@yourmail.com",
       "password": "Password",
+      "passwordPlaceholder": "Password",
       "agreePrefix": "I agree to the",
       "terms": "Terms of Service",
       "and": "and",
       "privacy": "Privacy Policy",
       "submit": "Sign Up",
-      "orJoinWith": "Or join with",
+      "orJoinWith": "Or sign up with",
       "haveAccount": "Already have an account?",
-      "signIn": "Sign In"
+      "signIn": "Sign In",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "defaultName": "Tu Vi"
     }
   },
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Hello, {name}",
+    "demoName": "Nguyen Van A",
     "recentCharts": "Recent Charts",
     "viewAll": "View all",
     "stats": {
@@ -64,20 +80,288 @@
     },
     "aboutUs": {
       "title": "About Us",
-      "description": "Tử Vi Academy is the leading Tử Vi Đẩu Số training platform."
+      "description": "Tử Vi Academy is the leading Zi Wei Dou Shu training platform."
     },
     "faq": {
-      "title": "FAQ"
+      "title": "Frequently Asked Questions"
     },
     "features": {
-      "title": "Features"
+      "title": "Featured Benefits"
+    },
+    "homeHero": {
+      "kicker": "Zi Wei Dou Shu",
+      "headline": "Understand fate, understand timing, then choose your next step clearly.",
+      "description": "Zi Wei is a framework for reading the relationship between people and their life path with care, structure, and enough realism for everyday decisions.",
+      "primaryCta": "Build your chart now",
+      "secondaryCta": "Explore the knowledge library",
+      "step1": "Step 1",
+      "step1Label": "Build chart",
+      "step2": "Step 2",
+      "step2Label": "Read the interpretation",
+      "step3": "Step 3",
+      "step3Label": "Save the result"
+    },
+    "intro": {
+      "kicker": "Introduction",
+      "title": "A system for reading life through structure, not superstition.",
+      "description": "Zi Wei Dou Shu is presented as a discipline with logic: it has roots, rules, operating principles, and practical value for understanding yourself, understanding timing, and living more clearly.",
+      "imageBadge": "Editorial context",
+      "imageCaption": "The image is only a visual layer for the academic mood, not the main content.",
+      "items": [
+        {
+          "title": "Know yourself, know others",
+          "description": "See strengths, blind spots, and areas that need support so you understand yourself more clearly."
+        },
+        {
+          "title": "Read cycles by phase",
+          "description": "See major and minor luck cycles as a timeline so you can prepare before changes arrive."
+        },
+        {
+          "title": "Move past superstition",
+          "description": "A proper reading helps avoid blind rituals, unfounded fortune-telling, and vague interpretations."
+        },
+        {
+          "title": "Guide self-cultivation",
+          "description": "See obstacles more clearly so you can focus on inner discipline, good action, and deliberate timing."
+        }
+      ]
+    },
+    "benefits": {
+      "kicker": "Practical value",
+      "title": "Zi Wei is only useful when it helps people live more clearly.",
+      "description": "This section condenses the practical value into 4 short points so readers can scan it quickly instead of reading a long block of copy.",
+      "items": [
+        "Understand the nature of the system to avoid misunderstanding it.",
+        "Read the relationship between fate, structure, stars, and palaces.",
+        "Recognize high and low phases so you can respond before change hits.",
+        "Use the result as a tool to adjust actions."
+      ]
+    },
+    "cta": {
+      "kicker": "Conclusion",
+      "title": "Zi Wei is a reasoning tool for living clearly, not a place to look for magic.",
+      "description": "When people understand a chart, they can see their path more clearly, avoid superstition, and move forward with more agency.",
+      "primary": "Build chart",
+      "secondary": "See the explanation section"
     }
+  },
+  "thuvien": {
+    "kicker": "Knowledge Library",
+    "title": "Library",
+    "titleAccent": "Interpretations",
+    "description": "Explore the knowledge base on stars, palaces, structures, and deeper meaning inside Zi Wei Dou Shu. Written for modern researchers with high accuracy.",
+    "stats": {
+      "totalStars": "Total Stars: 108",
+      "updated": "Updated: Q4 2024"
+    },
+    "filters": {
+      "all": "All Stars",
+      "major": "Major Stars",
+      "minor": "Minor Stars",
+      "transforms": "Transforms",
+      "cycles": "Cycles"
+    },
+    "filterByElement": "Filter by element"
+  },
+  "shared": {
+    "brand": "Tử Vi Alchemist",
+    "tagline": "Precision Mysticism",
+    "nav": {
+      "home": "Home",
+      "lapLaSo": "Birth Chart",
+      "vanHan": "Destiny Cycles",
+      "thuVien": "Library",
+      "hoSo": "Profile",
+      "newChart": "New Chart"
+    },
+    "changeLanguage": "Change Language",
+    "openAccountMenu": "Open account menu",
+    "accountMenu": "Account menu",
+    "profileSettings": "Profile settings",
+    "theme": "Theme",
+    "logout": "Log out",
+    "login": "Sign in",
+    "newChart": "New Chart",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
+    "closeLoginPrompt": "Close login prompt",
+    "minimalProfile": "Minimal profile",
+    "noData": "No data available",
+    "minimalProfileReady": "Minimal profile is ready.",
+    "timePrefix": "Time",
+    "loginRequiredTitle": "Login required",
+    "loginRequiredDescription": "This page requires authentication before you can enter.",
+    "loginRequiredBody": "Please sign in to open private pages, save your profile, and continue using personalized features.",
+    "later": "Later",
+    "loginNow": "Sign in now",
+    "toggleTheme": "Toggle theme",
+    "footer": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "support": "Contact Support"
+    }
+  },
+  "authTemplate": {
+    "brand": "Tử Vi Alchemist",
+    "footer": "© 2024 Celestial Meridian. Precision Mysticism."
   },
   "views": {
     "chart": {
       "title": "Birth Chart",
       "subtitle": "Star map preview",
-      "calculating": "Calculating data..."
+      "calculating": "Calculating data...",
+      "back": "Back",
+      "stats": {
+        "element": "Five Elements",
+        "group": "Cục",
+        "polarity": "Yin/Yang"
+      },
+      "actions": {
+        "aiReading": "AI Reading",
+        "share": "Share"
+      }
     }
+  },
+  "laplaso": {
+    "form": {
+      "kicker": "Zi Wei North School",
+      "title": "Build a Birth Chart",
+      "highlight": "Map the Life Palace",
+      "description": "Enter birth date and time to generate a Zi Wei chart, read the Life Palace, Body Palace, 12 palaces, and major cycles in a clear, compact way.",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Nguyễn Văn A",
+      "gender": "Gender",
+      "datetime": "Birth date and time",
+      "timezone": "Birth place and time zone",
+      "submit": "Build chart",
+      "submitting": "Building chart...",
+      "importantTitle": "Important information",
+      "importantDescription": "This engine prioritizes the Zi Wei Dou Shu structure: Life Palace, Body Palace, 12 palaces, major stars, minor stars, and luck cycles. Solar dates are converted by timezone; lunar dates are interpreted directly from the local birth time.",
+      "genderLabels": {
+        "male": "Male",
+        "female": "Female",
+        "other": "Other"
+      },
+      "calendarLabels": {
+        "solar": "Solar calendar",
+        "lunar": "Lunar calendar"
+      },
+      "timezoneLabels": {
+        "hanoi": "Hanoi (GMT+7)",
+        "saigon": "Saigon (GMT+7)",
+        "beijing": "Beijing (GMT+8)",
+        "california": "California (GMT-8)",
+        "paris": "Paris (GMT+1)"
+      }
+    },
+    "preview": {
+      "livePreview": "Live Preview",
+      "chartReady": "Zi Wei chart - 12 palaces",
+      "chartEmpty": "Star map",
+      "timezone": "TZ",
+      "lifePalace": "Life",
+      "bodyPalace": "Body",
+      "noMajorStars": "No major stars in this palace",
+      "minorStars": "Minor stars",
+      "noMinorStars": "No minor stars.",
+      "emptyTitle": "Life Chart",
+      "emptyDescription": "Enter the information on the left to set the Life Palace, Body Palace, lay out the 12 palaces, and generate the Zi Wei star set.",
+      "calculating": "Calculating...",
+      "overviewTitle": "Chart Overview",
+      "noSummary": "No data to interpret yet. When calculation completes, this area will summarize the Life Palace, Body Palace, structure, and career axis.",
+      "keyStarsTitle": "Key star cluster",
+      "waitingMajorStars": "Waiting for the main star set.",
+      "decadeTitle": "Initial luck cycles",
+      "noDecades": "No luck cycle data yet.",
+      "quickAnalysis": "Quick analysis",
+      "coreTraits": "Core traits",
+      "career": "Career",
+      "relationship": "Relationships",
+      "labels": {
+        "menh": "Life",
+        "than": "Body",
+        "cuc": "Cục",
+        "birthYear": "Birth year",
+        "engine": "Engine",
+        "mode": "Mode",
+        "output": "Output"
+      }
+    }
+  },
+  "profile": {
+    "titleKicker": "Personal Profile",
+    "title": "Adjust personal information and chart data in one private space.",
+    "description": "This page stores your default profile locally on this device, syncs with the account menu in the navbar, and keeps birth data, time zone, and chart notes consistent.",
+    "loadLatest": "Load latest chart",
+    "openChart": "Open chart",
+    "panelTitle": "Profile dashboard",
+    "panelSubtitle": "Edit personal data",
+    "draft": "Draft",
+    "saved": "Saved",
+    "loaded": "Chart loaded",
+    "personalInfo": "Personal information",
+    "fullName": "Full name",
+    "fullNamePlaceholder": "Enter full name",
+    "email": "Email",
+    "emailPlaceholder": "email@domain.com",
+    "phone": "Phone number",
+    "phonePlaceholder": "09xx xxx xxx",
+    "birthPlace": "Birth place",
+    "birthPlacePlaceholder": "City / country",
+    "chartInfo": "Chart information",
+    "birthDate": "Birth date",
+    "birthTime": "Birth time",
+    "timezone": "Time zone",
+    "timezonePlaceholder": "+07:00",
+    "calendar": "Lunar / solar",
+    "solarCalendar": "Solar calendar",
+    "lunarCalendar": "Lunar calendar",
+    "lunarNotes": "Lunar notes or chart description",
+    "lunarNotesPlaceholder": "Enter lunar notes, birth milestones, or private notes",
+    "options": "Options",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "saveProfile": "Save profile",
+    "clearDraft": "Clear draft",
+    "storageNote": "Data is stored locally and will appear in the account menu after saving.",
+    "minimalProfile": "Minimal profile",
+    "preview": "Preview",
+    "account": "Zi Wei account",
+    "tip": "Tip: if you just built a new chart, press Load latest chart to pull the birth data into this profile.",
+    "statusLabel": "Save status",
+    "savedStatus": "Profile saved to this device",
+    "loadedStatus": "Latest chart data loaded",
+    "unsavedStatus": "No changes saved yet",
+    "storageDescription": "This profile is stored only in the current browser. You can update it at any time without affecting your saved chart history.",
+    "summaryLabels": {
+      "fullName": "Full name",
+      "gender": "Gender",
+      "birth": "Birth",
+      "timezone": "Time zone",
+      "lunar": "Lunar",
+      "birthPlace": "Birth place"
+    },
+    "genderLabels": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    }
+  },
+  "savedCharts": {
+    "title": "Saved charts ({count})",
+    "delete": "Delete chart",
+    "anonymous": "Anonymous",
+    "load": "View chart"
+  },
+  "billing": {
+    "plans": {
+      "free": "Free",
+      "pro": "Pro",
+      "master": "Master"
+    },
+    "popular": "Most Popular",
+    "getStarted": "Get Started"
   }
 }

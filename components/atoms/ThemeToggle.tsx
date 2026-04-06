@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useTranslations } from "next-intl";
+import Icon from "./Icon";
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    // Sync with html class on mount
-    setIsDark(document.documentElement.classList.contains("dark"));
-  }, []);
+  const t = useTranslations("shared");
+  const [isDark, setIsDark] = useState(() =>
+    typeof document !== "undefined" ? document.documentElement.classList.contains("dark") : true
+  );
 
   const toggle = () => {
     const html = document.documentElement;
@@ -25,12 +25,10 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      aria-label="Toggle theme"
-      className="inline-flex items-center justify-center w-10 h-10 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors"
+      aria-label={t("toggleTheme")}
+      className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-outline-variant/25 bg-background/35 text-on-surface-variant transition-colors hover:bg-black/4 backdrop-blur-xl"
     >
-      <span className="material-symbols-outlined text-[1.2rem]">
-        {isDark ? "light_mode" : "dark_mode"}
-      </span>
+      <Icon className="text-[1.2rem]" name={isDark ? "light_mode" : "dark_mode"} />
     </button>
   );
 }

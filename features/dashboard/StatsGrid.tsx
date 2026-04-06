@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import Badge from "@/components/atoms/Badge";
+import Icon from "@/components/atoms/Icon";
 
 interface StatItem {
   key: "charts" | "readings" | "saved";
@@ -25,12 +26,7 @@ export default function StatsGrid() {
           className="card-low p-5 hover:border-primary/20 transition-all duration-300"
         >
           <div className="flex justify-between items-start mb-3">
-            <span
-              className="material-symbols-outlined text-primary"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              {icon}
-            </span>
+            <Icon className="text-primary" name={icon} />
             {trend && <Badge variant="success">{trend}</Badge>}
           </div>
           <p className="text-2xl font-bold text-on-surface">{value}</p>

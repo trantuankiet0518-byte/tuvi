@@ -1,4 +1,4 @@
-import LapLaSoExperience from "@/components/organisms/LapLaSoExperience";
+import { LapLaSoExperience } from "@/components/organisms";
 
 export default function LapLaSoPage() {
   return (

@@ -1,7 +1,9 @@
 "use client";
 
+import { memo } from "react";
 import type { TuViPalace, TuViStar } from "@/lib/bazi/types";
 import { getBranchLabel, getPalaceLabel, QUALITY_COLORS, QUALITY_LABELS, getStarLabel } from "@/lib/bazi/display";
+import Icon from "@/components/atoms/Icon";
 
 function StarLine({ star }: { star: TuViStar }) {
   return (
@@ -19,7 +21,7 @@ interface Props {
   onClick?: () => void;
 }
 
-export default function PalaceCell({ palace, onClick }: Props) {
+const PalaceCell = memo(function PalaceCell({ palace, onClick }: Props) {
   const hasMinor = palace.minorStars.length > 0;
 
   return (
@@ -27,8 +29,8 @@ export default function PalaceCell({ palace, onClick }: Props) {
       onClick={onClick}
       className={`
         rounded-xl p-3 flex flex-col gap-1.5 text-left w-full
-        bg-surface-container-low min-h-[130px]
-        hover:bg-surface-container-high transition-all duration-200
+        glass-border-panel-soft min-h-[130px]
+        hover:bg-white/5 transition-all duration-200
         hover:scale-[1.02] active:scale-[0.98]
         ${palace.isLifePalace ? "ring-1 ring-primary/50" : palace.isBodyPalace ? "ring-1 ring-tertiary/40" : ""}
       `}
@@ -43,10 +45,10 @@ export default function PalaceCell({ palace, onClick }: Props) {
         </div>
         <div className="flex flex-col items-end gap-0.5 shrink-0">
           {palace.isLifePalace && (
-            <span className="text-[7px] font-black uppercase text-primary bg-primary/10 px-1 py-0.5 rounded">Mệnh</span>
+            <span className="text-[7px] font-black uppercase text-primary border border-primary/20 bg-transparent px-1 py-0.5 rounded">Mệnh</span>
           )}
           {palace.isBodyPalace && (
-            <span className="text-[7px] font-black uppercase text-tertiary bg-tertiary/10 px-1 py-0.5 rounded">Thân</span>
+            <span className="text-[7px] font-black uppercase text-tertiary border border-tertiary/20 bg-transparent px-1 py-0.5 rounded">Thân</span>
           )}
         </div>
       </div>
@@ -62,12 +64,14 @@ export default function PalaceCell({ palace, onClick }: Props) {
 
       {/* Phụ tinh hint */}
       {hasMinor && (
-        <div className="flex items-center gap-1 pt-1 border-t border-outline-variant/10">
-          <span className="material-symbols-outlined text-[10px] text-outline/60">auto_awesome</span>
+        <div className="flex items-center gap-1 pt-1 border-t border-white/10">
+          <Icon name="auto_awesome" className="text-[10px] text-outline/60" />
           <span className="text-[8px] text-outline/60">{palace.minorStars.length} phụ tinh</span>
           <span className="ml-auto text-[7px] text-primary/60 font-semibold">Chi tiết →</span>
         </div>
       )}
     </button>
   );
-}
+});
+
+export default PalaceCell;

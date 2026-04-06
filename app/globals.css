@@ -205,10 +205,10 @@
   --color-inverse-on-surface:       var(--inverse-on-surface);
 
   /* Typography */
-  --font-family-sans:     "Inter", sans-serif;
-  --font-family-headline: "Inter", sans-serif;
-  --font-family-body:     "Inter", sans-serif;
-  --font-family-label:    "Inter", sans-serif;
+  --font-family-sans:     var(--font-outfit), sans-serif;
+  --font-family-headline: var(--font-cormorant-garamond), serif;
+  --font-family-body:     var(--font-outfit), sans-serif;
+  --font-family-label:    var(--font-outfit), sans-serif;
 
   /* Border radius */
   --radius:     0.375rem;
@@ -227,21 +227,15 @@
   * { box-sizing: border-box; }
 
   html {
-    font-family: "Inter", sans-serif;
+    font-family: var(--font-family-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
   }
 
   body {
     background-color: var(--background);
     color: var(--foreground);
-  }
-
-  .material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    display: inline-block;
-    line-height: 1;
-    user-select: none;
   }
 
   /* Shiny text — hero highlight */
@@ -263,6 +257,52 @@
   @keyframes shine {
     0%   { background-position: 100% 0; }
     100% { background-position: -100% 0; }
+  }
+
+  @keyframes hero-rise {
+    0% {
+      opacity: 0;
+      transform: translateY(18px) scale(0.985);
+      filter: blur(6px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes float-drift {
+    0%, 100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(0, -10px, 0);
+    }
+  }
+
+  @keyframes soft-pulse {
+    0%, 100% {
+      opacity: 0.45;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.75;
+      transform: scale(1.08);
+    }
+  }
+
+  @keyframes reveal-rise {
+    from {
+      opacity: 0;
+      transform: translateY(22px);
+      filter: blur(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
   }
 
   /* Scrollbar */
@@ -311,6 +351,131 @@
     box-shadow: var(--shadow-3);
   }
 
+  .animate-hero-rise {
+    animation: hero-rise 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .animate-float-drift {
+    animation: float-drift 9s ease-in-out infinite;
+  }
+
+  .animate-soft-pulse {
+    animation: soft-pulse 3.5s ease-in-out infinite;
+  }
+
+  .font-instrument-sans {
+    font-family: var(--font-family-sans);
+  }
+
+  .font-instrument-serif {
+    font-family: var(--font-family-headline);
+  }
+
+  .font-outfit {
+    font-family: var(--font-family-sans);
+  }
+
+  .font-cormorant-garamond {
+    font-family: var(--font-family-headline);
+  }
+
+  .marketing-shell {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top left, rgba(255, 193, 116, 0.16), transparent 34%),
+      radial-gradient(circle at top right, rgba(74, 96, 128, 0.18), transparent 30%),
+      radial-gradient(circle at bottom center, rgba(176, 90, 0, 0.12), transparent 26%),
+      linear-gradient(180deg, color-mix(in srgb, var(--background) 88%, #0b1020 12%) 0%, var(--background) 100%);
+  }
+
+  .marketing-grid {
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--outline-variant) 20%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--outline-variant) 20%, transparent) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.82) 20%, rgba(0,0,0,1) 100%);
+  }
+
+  .marketing-section {
+    position: relative;
+    z-index: 1;
+    padding-inline: 1.5rem;
+  }
+
+  .marketing-section-inner {
+    margin-inline: auto;
+    width: min(1120px, calc(100vw - 3rem));
+  }
+
+  .marketing-kicker {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--foreground) 55%, transparent);
+  }
+
+  .marketing-title {
+    font-family: var(--font-family-headline);
+    font-weight: 650;
+    letter-spacing: -0.055em;
+    line-height: 0.94;
+    color: var(--foreground);
+  }
+
+  .marketing-copy {
+    color: color-mix(in srgb, var(--foreground) 72%, transparent);
+    line-height: 1.8;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+    transition:
+      opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    will-change: auto;
+  }
+
+  .reveal.from-left {
+    transform: translate3d(-56px, 18px, 0);
+  }
+
+  .reveal.from-right {
+    transform: translate3d(56px, 18px, 0);
+  }
+
+  .reveal.scale-in {
+    transform: translate3d(0, 22px, 0) scale(0.94);
+  }
+
+  .reveal.visible.from-left,
+  .reveal.visible.from-right,
+  .reveal.visible.scale-in {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-hero-rise,
+    .animate-float-drift,
+    .animate-soft-pulse,
+    .reveal {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+    }
+  }
+
   /* Glass nav */
   .glass-nav {
     background: color-mix(in srgb, var(--background) 80%, transparent);
@@ -321,6 +486,27 @@
   /* Glass panel */
   .glass-panel {
     background: color-mix(in srgb, var(--surface-container-high) 70%, transparent);
+    backdrop-filter: blur(20px);
+  }
+
+  /* Glass border panel */
+  .glass-border-panel {
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--outline-variant) 40%, transparent);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.03),
+      0 16px 44px rgba(0, 0, 0, 0.34),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(24px);
+  }
+
+  .glass-border-panel-soft {
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--outline-variant) 30%, transparent);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.025),
+      0 10px 28px rgba(0, 0, 0, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(20px);
   }
 

@@ -5,33 +5,45 @@
     "vanHan": "Vận Hạn",
     "thuVien": "Thư viện",
     "hoSo": "Hồ sơ",
-    "newChart": "Lập lá số mới"
+    "newChart": "Lập Lá Số"
   },
   "common": {
     "loading": "Đang tải...",
     "search": "Tìm kiếm...",
     "save": "Lưu",
     "cancel": "Hủy",
-    "back": "Quay lại"
+    "back": "Quay lại",
+    "noData": "Không có dữ liệu"
   },
   "auth": {
+    "shell": {
+      "brand": "Tử Vi Alchemist",
+      "subtitle": "Truy cập an toàn"
+    },
     "login": {
-      "title": "Welcome Back",
+      "title": "Chào mừng trở lại",
       "subtitle": "Nhập thông tin để tiếp tục hành trình",
-      "email": "Địa chỉ Email",
+      "email": "Địa chỉ email",
       "password": "Mật khẩu",
       "forgotPassword": "Quên mật khẩu?",
       "submit": "Đăng nhập",
       "orContinueWith": "Hoặc tiếp tục với",
       "noAccount": "Chưa có tài khoản?",
-      "signUp": "Đăng ký"
+      "signUp": "Đăng ký",
+      "showPassword": "Hiện mật khẩu",
+      "hidePassword": "Ẩn mật khẩu",
+      "defaultName": "Tử Vi"
     },
     "register": {
+      "badge": "Đăng ký",
       "title": "Tạo hồ sơ thiên văn",
-      "subtitle": "Khám phá bản mệnh với Tử Vi Đẩu Số.",
+      "subtitle": "Khám phá bản mệnh với Tử Vi Đẩu Số cổ truyền.",
       "fullName": "Họ và tên",
-      "email": "Địa chỉ Email",
+      "fullNamePlaceholder": "Nguyễn Văn A",
+      "email": "Địa chỉ email",
+      "emailPlaceholder": "hello@yourmail.com",
       "password": "Mật khẩu",
+      "passwordPlaceholder": "Mật khẩu",
       "agreePrefix": "Tôi đồng ý với",
       "terms": "Điều khoản dịch vụ",
       "and": "và",
@@ -39,12 +51,16 @@
       "submit": "Đăng ký",
       "orJoinWith": "Hoặc đăng ký với",
       "haveAccount": "Đã có tài khoản?",
-      "signIn": "Đăng nhập"
+      "signIn": "Đăng nhập",
+      "showPassword": "Hiện mật khẩu",
+      "hidePassword": "Ẩn mật khẩu",
+      "defaultName": "Tử Vi"
     }
   },
   "dashboard": {
     "title": "Bảng điều khiển",
     "welcome": "Xin chào, {name}",
+    "demoName": "Nguyễn Văn A",
     "recentCharts": "Lá số gần đây",
     "viewAll": "Xem tất cả",
     "stats": {
@@ -71,13 +87,281 @@
     },
     "features": {
       "title": "Tính năng nổi bật"
+    },
+    "homeHero": {
+      "kicker": "Tử Vi Đẩu Số",
+      "headline": "Hiểu mệnh, hiểu vận, rồi chọn bước đi cho rõ.",
+      "description": "Tử Vi là một hệ luận để nhìn quan hệ giữa con người và vận trình theo cách thận trọng, rõ cấu trúc và đủ thực tế để dùng trong quyết định hằng ngày.",
+      "primaryCta": "Lập lá số ngay",
+      "secondaryCta": "Xem thư viện kiến thức",
+      "step1": "Bước 1",
+      "step1Label": "Lập lá số",
+      "step2": "Bước 2",
+      "step2Label": "Xem giải thích",
+      "step3": "Bước 3",
+      "step3Label": "Lưu kết quả"
+    },
+    "intro": {
+      "kicker": "Giới thiệu",
+      "title": "Một hệ thống để đọc đời sống bằng cấu trúc, không bằng huyền hoặc.",
+      "description": "Tử Vi Đẩu Số được trình bày như một môn học có lý luận: có nguồn gốc, có cơ sở, có cách vận hành và có giá trị thực tế cho việc hiểu mình, hiểu vận và sống tỉnh táo hơn.",
+      "imageBadge": "Nền đọc",
+      "imageCaption": "Hình ảnh chỉ làm nền cho cảm giác học thuật, không lấn nội dung chính.",
+      "items": [
+        {
+          "title": "Biết mình, biết người",
+          "description": "Nhìn ra tiềm năng, điểm mạnh và vùng cần bù đắp để hiểu bản thân rõ hơn."
+        },
+        {
+          "title": "Nhìn hưng suy theo giai đoạn",
+          "description": "Xem đại hạn, tiểu hạn như một nhịp thời gian để chủ động hơn trước biến động."
+        },
+        {
+          "title": "Thoát khỏi mê tín",
+          "description": "Hiểu đúng Tử Vi giúp người xem tránh bùa chú, giải hạn vô căn cứ và những diễn giải mù mờ."
+        },
+        {
+          "title": "Định hướng tu thân",
+          "description": "Thấy rõ trắc trở để tập trung tu tâm dưỡng tính, làm việc thiện và điều chỉnh vận trình."
+        }
+      ]
+    },
+    "benefits": {
+      "kicker": "Giá trị thực tế",
+      "title": "Tử Vi chỉ hữu ích khi nó giúp người xem sống tỉnh táo hơn.",
+      "description": "Phần này gom các giá trị thực tế vào 4 ý ngắn gọn, để người đọc dễ quét và dễ hiểu hơn thay vì phải đọc một khối văn dài.",
+      "items": [
+        "Nắm được bản chất của môn học để tránh hiểu sai.",
+        "Đọc được mối tương quan giữa mệnh, cục, sao và cung.",
+        "Nhận ra các giai đoạn hưng suy để chủ động trước biến động.",
+        "Dùng kết quả xem như một công cụ điều chỉnh hành động."
+      ]
+    },
+    "cta": {
+      "kicker": "Kết luận",
+      "title": "Tử Vi là công cụ lý luận để sống tỉnh táo, không phải để tìm phép màu.",
+      "description": "Khi hiểu được lá số, người dùng có thể nhìn rõ lộ trình, tránh mê tín và bước tiếp bằng một quyết định chủ động hơn.",
+      "primary": "Lập lá số",
+      "secondary": "Xem phần giải thích"
     }
+  },
+  "thuvien": {
+    "kicker": "Thư viện kiến thức",
+    "title": "Thư viện",
+    "titleAccent": "giải nghĩa",
+    "description": "Khám phá kho tàng tri thức về tinh lý các sao, cách cục và ý nghĩa chuyên sâu trong khoa Tử Vi Đẩu Số. Được biên soạn với độ chính xác cao nhất cho nhà nghiên cứu hiện đại.",
+    "stats": {
+      "totalStars": "Tổng sao: 108",
+      "updated": "Cập nhật: Q4 2024"
+    },
+    "filters": {
+      "all": "Tất cả các sao",
+      "major": "Chính Tinh",
+      "minor": "Phụ Tinh",
+      "transforms": "Tứ Hóa",
+      "cycles": "Vòng Tràng Sinh"
+    },
+    "filterByElement": "Lọc theo ngũ hành"
+  },
+  "shared": {
+    "brand": "Tử Vi Alchemist",
+    "tagline": "Precision Mysticism",
+    "nav": {
+      "home": "Trang chủ",
+      "lapLaSo": "Lập Lá Số",
+      "vanHan": "Vận Hạn",
+      "thuVien": "Thư viện",
+      "hoSo": "Hồ sơ",
+      "newChart": "Lập Lá Số"
+    },
+    "changeLanguage": "Đổi ngôn ngữ",
+    "openAccountMenu": "Mở menu tài khoản",
+    "accountMenu": "Menu tài khoản",
+    "profileSettings": "Cài đặt hồ sơ",
+    "theme": "Giao diện",
+    "logout": "Đăng xuất",
+    "login": "Đăng nhập",
+    "newChart": "Lập Lá Số",
+    "closeMenu": "Đóng menu",
+    "openMenu": "Mở menu",
+    "closeLoginPrompt": "Đóng thông báo đăng nhập",
+    "minimalProfile": "Hồ sơ tối thiểu",
+    "noData": "Chưa có dữ liệu",
+    "minimalProfileReady": "Hồ sơ tối thiểu đã sẵn sàng.",
+    "timePrefix": "Giờ",
+    "loginRequiredTitle": "Cần đăng nhập",
+    "loginRequiredDescription": "Trang này yêu cầu xác thực trước khi vào.",
+    "loginRequiredBody": "Hãy đăng nhập để mở các trang riêng tư, lưu hồ sơ và tiếp tục dùng các tính năng cá nhân hóa.",
+    "later": "Để sau",
+    "loginNow": "Đăng nhập ngay",
+    "toggleTheme": "Đổi giao diện",
+    "footer": {
+      "privacy": "Chính sách bảo mật",
+      "terms": "Điều khoản dịch vụ",
+      "support": "Liên hệ hỗ trợ"
+    }
+  },
+  "authTemplate": {
+    "brand": "Tử Vi Alchemist",
+    "footer": "© 2024 Celestial Meridian. Precision Mysticism."
   },
   "views": {
     "chart": {
       "title": "Mệnh Bàn",
       "subtitle": "Xem trước bản đồ sao",
-      "calculating": "Dữ liệu đang được tính toán..."
+      "calculating": "Dữ liệu đang được tính toán...",
+      "back": "Quay lại",
+      "stats": {
+        "element": "Ngũ hành",
+        "group": "Cục",
+        "polarity": "Âm Dương"
+      },
+      "actions": {
+        "aiReading": "Giải đoán AI",
+        "share": "Chia sẻ"
+      }
     }
+  },
+  "laplaso": {
+    "form": {
+      "kicker": "Tử Vi Bắc Tông",
+      "title": "Lập Lá Số",
+      "highlight": "An Mệnh Bàn",
+      "description": "Nhập ngày giờ sinh để mở lá số Tử Vi, xem Mệnh, Thân, 12 cung và đại hạn theo cách rõ ràng, gọn và dễ đọc.",
+      "fullName": "Họ tên",
+      "fullNamePlaceholder": "Nguyễn Văn A",
+      "gender": "Giới tính",
+      "datetime": "Ngày và giờ sinh",
+      "timezone": "Nơi sinh và múi giờ",
+      "submit": "Lập Lá Số",
+      "submitting": "Đang lập lá số...",
+      "importantTitle": "Thông tin quan trọng",
+      "importantDescription": "Engine này ưu tiên cấu trúc Tử Vi Đẩu Số: an Mệnh, an Thân, 12 cung, chính tinh, phụ tinh và đại hạn. Dương lịch sẽ được quy đổi theo múi giờ, âm lịch sẽ tính trực tiếp trên giờ sinh địa phương.",
+      "genderLabels": {
+        "male": "Nam",
+        "female": "Nữ",
+        "other": "Khác"
+      },
+      "calendarLabels": {
+        "solar": "Dương lịch",
+        "lunar": "Âm lịch"
+      },
+      "timezoneLabels": {
+        "hanoi": "Hà Nội (GMT+7)",
+        "saigon": "Sài Gòn (GMT+7)",
+        "beijing": "Bắc Kinh (GMT+8)",
+        "california": "California (GMT-8)",
+        "paris": "Paris (GMT+1)"
+      }
+    },
+    "preview": {
+      "livePreview": "Xem trước trực tiếp",
+      "chartReady": "Lá số tử vi 12 cung",
+      "chartEmpty": "Bản đồ sao",
+      "timezone": "Múi giờ",
+      "lifePalace": "Mệnh",
+      "bodyPalace": "Thân",
+      "noMajorStars": "Vô chính diệu",
+      "minorStars": "Phụ tinh",
+      "noMinorStars": "Không có phụ tinh.",
+      "emptyTitle": "Mệnh bàn",
+      "emptyDescription": "Nhập thông tin bên trái để an Mệnh, an Thân, sắp 12 cung và sinh bộ sao Tử Vi.",
+      "calculating": "Đang tính toán...",
+      "overviewTitle": "Tổng quan lá số",
+      "noSummary": "Chưa có dữ liệu để diễn giải. Khi tính xong, khu vực này sẽ tóm tắt Mệnh, Thân, cục và trục nghề nghiệp.",
+      "keyStarsTitle": "Cụm sao trọng tâm",
+      "waitingMajorStars": "Đang chờ bộ sao chính tinh.",
+      "decadeTitle": "Đại hạn mở đầu",
+      "noDecades": "Chưa có dữ liệu đại hạn.",
+      "quickAnalysis": "Phân tích nhanh",
+      "coreTraits": "Cốt cách",
+      "career": "Sự nghiệp",
+      "relationship": "Tình cảm",
+      "labels": {
+        "menh": "Mệnh",
+        "than": "Thân",
+        "cuc": "Cục",
+        "birthYear": "Năm sinh",
+        "engine": "Engine",
+        "mode": "Mode",
+        "output": "Output"
+      }
+    }
+  },
+  "profile": {
+    "titleKicker": "Hồ sơ cá nhân",
+    "title": "Điều chỉnh thông tin cá nhân và lá số trong một không gian riêng.",
+    "description": "Trang này lưu hồ sơ mặc định của bạn ngay trong máy, đồng bộ với menu account trên navbar và giữ cho dữ liệu sinh, giờ sinh, múi giờ cùng ghi chú lá số luôn nhất quán.",
+    "loadLatest": "Nạp lá số gần nhất",
+    "openChart": "Mở lá số",
+    "panelTitle": "Điều khiển hồ sơ",
+    "panelSubtitle": "Chỉnh dữ liệu cá nhân",
+    "draft": "Bản nháp",
+    "saved": "Đã lưu cục bộ",
+    "loaded": "Đã nạp lá số",
+    "personalInfo": "Thông tin cá nhân",
+    "fullName": "Họ và tên",
+    "fullNamePlaceholder": "Nhập họ và tên",
+    "email": "Email",
+    "emailPlaceholder": "email@domain.com",
+    "phone": "Số điện thoại",
+    "phonePlaceholder": "09xx xxx xxx",
+    "birthPlace": "Nơi sinh",
+    "birthPlacePlaceholder": "Thành phố / quốc gia",
+    "chartInfo": "Thông tin lá số",
+    "birthDate": "Ngày sinh",
+    "birthTime": "Giờ sinh",
+    "timezone": "Múi giờ",
+    "timezonePlaceholder": "+07:00",
+    "calendar": "Âm / dương",
+    "solarCalendar": "Dương lịch",
+    "lunarCalendar": "Âm lịch",
+    "lunarNotes": "Ghi chú âm lịch hoặc mô tả lá số",
+    "lunarNotesPlaceholder": "Nhập âm lịch, cột mốc sinh, hoặc ghi chú riêng",
+    "options": "Tuỳ chọn",
+    "gender": "Giới tính",
+    "male": "Nam",
+    "female": "Nữ",
+    "other": "Khác",
+    "saveProfile": "Lưu hồ sơ",
+    "clearDraft": "Xoá bản nháp",
+    "storageNote": "Dữ liệu được lưu cục bộ và sẽ hiện trong menu account sau khi lưu.",
+    "minimalProfile": "Hồ sơ tối thiểu",
+    "preview": "Xem nhanh",
+    "account": "Tài khoản Tử Vi",
+    "tip": "Mẹo: nếu bạn vừa lập một lá số mới, bấm Nạp lá số gần nhất để kéo nhanh dữ liệu sinh sang hồ sơ này.",
+    "statusLabel": "Trạng thái lưu",
+    "savedStatus": "Đã lưu hồ sơ vào máy",
+    "loadedStatus": "Đã nạp dữ liệu lá số gần nhất",
+    "unsavedStatus": "Chưa lưu thay đổi",
+    "storageDescription": "Hồ sơ này chỉ lưu trên trình duyệt hiện tại. Nếu cần, bạn có thể chỉnh lại bất cứ lúc nào mà không ảnh hưởng đến lịch sử lá số đã lưu.",
+    "summaryLabels": {
+      "fullName": "Họ tên",
+      "gender": "Giới tính",
+      "birth": "Sinh",
+      "timezone": "Múi giờ",
+      "lunar": "Âm lịch",
+      "birthPlace": "Nơi sinh"
+    },
+    "genderLabels": {
+      "male": "Nam",
+      "female": "Nữ",
+      "other": "Khác"
+    }
+  },
+  "savedCharts": {
+    "title": "Lá số đã lưu ({count})",
+    "delete": "Xoá lá số",
+    "anonymous": "Ẩn danh",
+    "load": "Xem lá số"
+  },
+  "billing": {
+    "plans": {
+      "free": "Miễn phí",
+      "pro": "Chuyên nghiệp",
+      "master": "Bậc thầy"
+    },
+    "popular": "Phổ biến nhất",
+    "getStarted": "Bắt đầu ngay"
   }
 }

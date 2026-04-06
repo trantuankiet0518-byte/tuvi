@@ -51,7 +51,7 @@ export default function StarDetailRow({ star, isMinor = false, showDesc = true }
   const desc = isMinor ? MINOR_STAR_DESC[star.name] : MAJOR_STAR_DESC[star.name];
 
   return (
-    <div className="rounded-xl bg-surface-container-low p-4 space-y-2">
+    <div className="glass-border-panel-soft rounded-xl p-4 space-y-2">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className={`text-sm font-bold ${QUALITY_COLORS[star.quality]}`}>
@@ -61,7 +61,7 @@ export default function StarDetailRow({ star, isMinor = false, showDesc = true }
             {QUALITY_LABELS[star.quality]}
           </span>
         </div>
-        <span className="text-[9px] font-bold uppercase tracking-wider text-outline bg-surface-container-high px-2 py-0.5 rounded-full">
+        <span className="glass-border-panel-soft text-[9px] font-bold uppercase tracking-wider text-outline px-2 py-0.5 rounded-full">
           {getElementLabel(star.element)}
         </span>
       </div>

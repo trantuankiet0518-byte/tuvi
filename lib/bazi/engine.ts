@@ -1,4 +1,4 @@
-import "server-only";
+﻿import "server-only";
 
 import { toDate, toZonedTime } from "date-fns-tz";
 import {
@@ -11,7 +11,7 @@ import {
   SolarTime,
 } from "tyme4ts";
 
-import type { FortuneRequest, TuViDecadeCycle, TuViEngineResult, TuViPalace, TuViStar } from "./types";
+import type { FortuneRequest, TuViDecadeCycle, TuViEngineResult, TuViPalace, TuViStar } from "@/lib/bazi/types";
 
 const provider1 = new DefaultEightCharProvider();
 const provider2 = new LunarSect2EightCharProvider();
@@ -221,6 +221,27 @@ function getThanIdx(lunarMonth: number, hourBranchIdx: number): number {
   return mod12(2 + (lunarMonth - 1) + hourBranchIdx);
 }
 
+/**
+ * Ngũ Hổ Độn — find the Heaven Stem (Can) index of the Mệnh Palace.
+ *
+ * The rule derives the Can of Dần (branch index 2) from the year's Can,
+ * then offsets to the Mệnh Palace's branch index.
+ *
+ * Year Can group → Can of Dần:
+ *   Giáp(0)/Kỷ(5) → Bính(2)
+ *   Ất(1)/Canh(6) → Mậu(4)
+ *   Bính(2)/Tân(7) → Canh(6)
+ *   Đinh(3)/Nhâm(8) → Nhâm(8)
+ *   Mậu(4)/Quý(9) → Giáp(0)
+ */
+function getMenhCanIdx(yearStemIdx: number, menhBranchIdx: number): number {
+  const danCanTable = [2, 4, 6, 8, 0, 2, 4, 6, 8, 0]; // indexed by yearStemIdx 0-9
+  const danCan = danCanTable[yearStemIdx];
+  // Dần is branch index 2; offset from Dần to menhBranchIdx
+  const offset = mod12(menhBranchIdx - 2);
+  return (danCan + offset) % 10;
+}
+
 const NAP_AM_CORRECT: string[] = [
   "Kim", "Kim", "Hoa", "Hoa", "Moc", "Moc", "Tho", "Tho", "Kim", "Kim",
   "Hoa", "Hoa", "Thuy", "Thuy", "Tho", "Tho", "Kim", "Kim", "Moc", "Moc",
@@ -231,7 +252,7 @@ const NAP_AM_CORRECT: string[] = [
 ];
 
 function getCuc(stemIdx: number, branchIdx: number): { name: string; number: number } {
-  const pos60 = (stemIdx * 12 + branchIdx) % 60;
+  const pos60 = (stemIdx * 36 + branchIdx * 25) % 60;
   const element = NAP_AM_CORRECT[pos60] ?? "Hoa";
 
   switch (element) {
@@ -791,7 +812,8 @@ export function calculateTuVi(input: FortuneRequest): TuViEngineResult {
 
   const menhIdx = getMenhIdx(lunarMonth, hourBranchIdx);
   const thanIdx = getThanIdx(lunarMonth, hourBranchIdx);
-  const cuc = getCuc(yearStemIdx, yearBranchIdx);
+  const menhCanIdx = getMenhCanIdx(yearStemIdx, menhIdx);
+  const cuc = getCuc(menhCanIdx, menhIdx);
   const gender: TymeGender = input.gender === "nu" ? 0 : 1;
 
   const palaces = buildPalaces(
@@ -846,3 +868,4 @@ export function calculateTuVi(input: FortuneRequest): TuViEngineResult {
 }
 
 export const calculateBazi = calculateTuVi;
+

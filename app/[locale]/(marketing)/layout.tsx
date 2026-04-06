@@ -1,47 +1,32 @@
 import { ReactNode } from "react";
-import Navbar from "@/components/organisms/Navbar";
+import { useTranslations } from "next-intl";
+import { Navbar } from "@/components/organisms";
 
 export default function MarketingLayout({ children }: { children: ReactNode }) {
-  return (
-    <div className="min-h-screen bg-background text-on-surface overflow-x-hidden selection:bg-primary selection:text-on-primary">
-      {/* Hero video background */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute min-w-full min-h-full object-cover opacity-50 dark:opacity-60"
-        >
-          <source
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_105406_16f4600d-7a92-4292-b96e-b19156c7830a.mp4"
-            type="video/mp4"
-          />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" />
-      </div>
+  const t = useTranslations("shared");
 
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-background text-foreground selection:bg-primary selection:text-on-primary">
       <Navbar />
 
-      {children}
+      <main>{children}</main>
 
-      <footer className="relative z-10 bg-surface-container-low w-full py-12 px-8 elev-2">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto">
-          <div className="text-lg font-semibold text-on-surface">Tử Vi Academy</div>
-          <div className="flex gap-8">
-            {["Privacy Policy", "Terms of Service", "FAQ"].map((label) => (
-              <a
-                key={label}
-                href="#"
-                className="text-xs uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors"
-              >
+      <footer className="border-t border-outline-variant/40 bg-background py-8">
+        <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-4 px-6 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+          <div>
+            <div className="text-base font-semibold tracking-tight text-foreground">{t("brand")}</div>
+            <p className="mt-1 text-sm leading-6 text-on-surface-variant">
+              {t("tagline")} for the Modern Age.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs uppercase tracking-[0.22em] text-on-surface-variant sm:justify-end">
+            {[t("footer.privacy"), t("footer.terms"), "FAQ"].map((label) => (
+              <a key={label} href="#" className="transition-colors hover:text-foreground">
                 {label}
               </a>
             ))}
           </div>
-          <p className="text-xs uppercase tracking-widest text-on-surface-variant">
-            © 2024 Tử Vi Academy. Precision Mysticism for the Modern Age.
-          </p>
         </div>
       </footer>
     </div>

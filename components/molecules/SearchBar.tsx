@@ -3,6 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import Input from "@/components/atoms/Input";
+import Icon from "@/components/atoms/Icon";
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
@@ -34,7 +35,7 @@ export default function SearchBar({ onSearch, placeholder, className = "" }: Sea
           onClick={() => { setQuery(""); onSearch?.(""); }}
           className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 hover:text-on-surface transition-colors"
         >
-          <span className="material-symbols-outlined text-lg">close</span>
+          <Icon name="close" className="text-lg" />
         </button>
       )}
     </form>
