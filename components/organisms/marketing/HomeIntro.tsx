@@ -37,6 +37,7 @@ export default function HomeIntro() {
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 loading="lazy"
+                unoptimized
                 className="object-cover object-center opacity-85 grayscale-[0.12]"
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(10,10,12,0.72))]" />
