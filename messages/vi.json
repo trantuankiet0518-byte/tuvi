@@ -218,7 +218,8 @@
       },
       "actions": {
         "aiReading": "Giải đoán AI",
-        "share": "Chia sẻ"
+        "share": "Chia sẻ",
+        "viewVanHan": "Xem Vận Hạn"
       }
     }
   },

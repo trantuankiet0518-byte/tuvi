@@ -31,12 +31,12 @@ export default function LapLaSoPreview({ result, isPending, error, timezone }: L
             {result ? t("chartReady") : t("chartEmpty")}
           </h3>
         </div>
-        <span className="rounded-md bg-surface-container px-2 py-1 font-mono text-[10px] tracking-tighter text-on-surface-variant">
+        <span className="ui-pill rounded-md px-2 py-1 font-mono text-[10px] tracking-tighter text-on-surface-variant">
           {t("timezone")}: {timezone}
         </span>
       </div>
 
-      <div className="glass-border-panel relative overflow-hidden rounded-[2.5rem] p-10">
+      <div className="ui-shell relative rounded-[2.5rem] p-10">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,210,140,0.16),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(104,164,255,0.1),transparent_32%)]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.07]">
           <svg className="h-full w-full" viewBox="0 0 100 100">
@@ -51,7 +51,7 @@ export default function LapLaSoPreview({ result, isPending, error, timezone }: L
             palaces.map((palace) => (
               <article
                 key={`${palace.name}-${palace.branch}`}
-                className="glass-border-panel-soft rounded-[2rem] p-5"
+                className="ui-panel rounded-[2rem] p-5"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -71,13 +71,13 @@ export default function LapLaSoPreview({ result, isPending, error, timezone }: L
                     palace.majorStars.map((star) => (
                       <span
                         key={`${palace.name}-${star.name}`}
-                        className="rounded-full bg-primary/10 px-3 py-1 text-[11px] font-black uppercase tracking-wide text-primary"
+                        className="ui-pill rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-wide text-primary"
                       >
                         {getStarLabel(star.name)} {QUALITY_LABELS[star.quality]}
                       </span>
                     ))
                   ) : (
-                    <span className="rounded-full bg-surface px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-on-surface-variant">
+                    <span className="ui-pill rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-on-surface-variant">
                       {t("noMajorStars")}
                     </span>
                   )}
@@ -90,7 +90,7 @@ export default function LapLaSoPreview({ result, isPending, error, timezone }: L
                       {palace.minorStars.map((star) => (
                         <span
                           key={`${palace.name}-${star.name}`}
-                          className="rounded-full bg-surface px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-on-surface"
+                          className="ui-pill rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-on-surface"
                         >
                           {getStarLabel(star.name)}
                         </span>
@@ -105,8 +105,8 @@ export default function LapLaSoPreview({ result, isPending, error, timezone }: L
               </article>
             ))
           ) : (
-            <div className="glass-border-panel rounded-[2rem] p-10 text-center md:col-span-2 xl:col-span-3">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary/15 text-primary shadow-[0_0_30px_rgba(255,198,124,0.22)]">
+            <div className="ui-panel rounded-[2rem] p-10 text-center md:col-span-2 xl:col-span-3">
+          <div className="ui-panel-soft mx-auto flex h-20 w-20 items-center justify-center rounded-full text-primary shadow-[0_0_30px_rgba(255,198,124,0.22)]">
                 <Icon name="auto_awesome" className="text-4xl" />
               </div>
               <h2 className="mt-6 text-2xl font-black uppercase tracking-[0.2em] text-on-surface">{t("emptyTitle")}</h2>
@@ -134,7 +134,7 @@ export default function LapLaSoPreview({ result, isPending, error, timezone }: L
               ]).map(({ label, value }) => (
             <div
               key={label}
-              className="glass-border-panel-soft flex items-center gap-3 rounded-2xl px-5 py-2.5"
+              className="ui-panel-soft flex items-center gap-3 rounded-2xl px-5 py-2.5"
             >
               <span className="text-[10px] font-black uppercase tracking-[0.1em] text-on-surface-variant">{label}</span>
               <span className="text-xs font-black text-on-surface">{value}</span>
@@ -144,7 +144,7 @@ export default function LapLaSoPreview({ result, isPending, error, timezone }: L
       </div>
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <div className="glass-border-panel-soft rounded-[2rem] p-6">
+        <div className="ui-panel rounded-[2rem] p-6">
           <p className="text-sm font-black uppercase tracking-wider text-on-surface">{t("overviewTitle")}</p>
           <div className="mt-4 space-y-3">
             {summary.length > 0 ? (
@@ -161,12 +161,12 @@ export default function LapLaSoPreview({ result, isPending, error, timezone }: L
           </div>
         </div>
 
-        <div className="glass-border-panel-soft rounded-[2rem] p-6">
+        <div className="ui-panel rounded-[2rem] p-6">
           <p className="text-sm font-black uppercase tracking-wider text-on-surface">{t("keyStarsTitle")}</p>
           <div className="mt-4 flex flex-wrap gap-3">
             {keyStars.length > 0 ? (
               keyStars.map((star) => (
-                <span key={star} className="rounded-full bg-primary/10 px-4 py-2 text-xs font-black uppercase text-primary">
+                <span key={star} className="ui-pill rounded-full px-4 py-2 text-xs font-black uppercase text-primary">
                   {getStarLabel(star)}
                 </span>
               ))
@@ -178,12 +178,12 @@ export default function LapLaSoPreview({ result, isPending, error, timezone }: L
       </div>
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[1fr_1fr]">
-        <div className="glass-border-panel-soft rounded-[2rem] p-6">
+        <div className="ui-panel rounded-[2rem] p-6">
           <p className="text-sm font-black uppercase tracking-wider text-on-surface">{t("decadeTitle")}</p>
           <div className="mt-4 space-y-3">
             {decades.length > 0 ? (
               decades.map((item) => (
-                <div key={`${item.palace}-${item.startAge}`} className="glass-border-panel-soft rounded-2xl p-4">
+                <div key={`${item.palace}-${item.startAge}`} className="ui-panel-soft rounded-2xl p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-base font-black text-primary">
                       {getPalaceLabel(item.palace)} | {getBranchLabel(item.branch)}
@@ -201,7 +201,7 @@ export default function LapLaSoPreview({ result, isPending, error, timezone }: L
           </div>
         </div>
 
-        <div className="glass-border-panel-soft rounded-[2rem] p-6">
+        <div className="ui-panel rounded-[2rem] p-6">
           <p className="text-sm font-black uppercase tracking-wider text-on-surface">{t("quickAnalysis")}</p>
           <div className="mt-4 space-y-4">
             <div>

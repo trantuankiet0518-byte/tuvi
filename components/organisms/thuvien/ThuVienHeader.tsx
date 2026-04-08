@@ -20,7 +20,7 @@ export default function ThuVienHeader({ searchTerm, onSearchChange }: ThuVienHea
       <header className="mb-20">
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
           <div className="space-y-4">
-            <p className="w-fit rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-black uppercase tracking-[0.4em] text-primary">
+            <p className="ui-pill w-fit rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-[0.4em] text-primary">
               {t("kicker")}
             </p>
             <h1 className="text-5xl font-black tracking-tighter text-on-surface lg:text-7xl">
@@ -31,10 +31,10 @@ export default function ThuVienHeader({ searchTerm, onSearchChange }: ThuVienHea
             </p>
           </div>
           <div className="flex gap-3 self-start">
-            <span className="rounded-xl border border-white/10 bg-transparent px-4 py-2 text-xs font-black uppercase tracking-widest text-on-surface shadow-sm backdrop-blur-xl">
+            <span className="ui-pill rounded-xl px-4 py-2 text-xs font-black uppercase tracking-widest text-on-surface">
               {t("stats.totalStars")}
             </span>
-            <span className="rounded-xl border border-white/10 bg-transparent px-4 py-2 text-xs font-black uppercase tracking-widest text-on-surface shadow-sm backdrop-blur-xl">
+            <span className="ui-pill rounded-xl px-4 py-2 text-xs font-black uppercase tracking-widest text-on-surface">
               {t("stats.updated")}
             </span>
           </div>
@@ -49,13 +49,13 @@ export default function ThuVienHeader({ searchTerm, onSearchChange }: ThuVienHea
               value={searchTerm}
               onChange={(event) => onSearchChange(event.target.value)}
               placeholder="Tìm sao, hệ sao, ngũ hành..."
-              className="h-14 w-full rounded-[1.5rem] border border-white/10 bg-transparent px-14 pr-14 text-base font-medium text-on-surface outline-none placeholder:text-on-surface-variant shadow-xl shadow-background/50 backdrop-blur-xl transition-all focus:border-primary/30 focus:bg-white/5"
+              className="ui-input h-14 w-full rounded-[1.5rem] px-14 pr-14 text-base font-medium text-on-surface outline-none placeholder:text-on-surface-variant transition-all"
             />
             {searchTerm.length > 0 ? (
               <button
                 type="button"
                 onClick={() => onSearchChange("")}
-                className="absolute right-4 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-xl text-on-surface-variant transition-colors hover:bg-white/5 hover:text-on-surface"
+                className="ui-panel-soft absolute right-4 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-xl text-on-surface-variant transition-colors hover:text-on-surface"
                 aria-label="Xóa nội dung tìm kiếm"
               >
                 <Icon name="close" className="text-lg" />
@@ -70,7 +70,7 @@ export default function ThuVienHeader({ searchTerm, onSearchChange }: ThuVienHea
       </header>
 
       <section className="mb-16">
-        <div className="flex flex-wrap items-center gap-2 rounded-[2rem] border border-white/10 bg-transparent p-2 shadow-xl shadow-background/50 backdrop-blur-xl">
+        <div className="ui-shell flex flex-wrap items-center gap-2 rounded-[2rem] p-2">
           {filters.map((key, i) => (
             <button
               key={key}
@@ -78,8 +78,8 @@ export default function ThuVienHeader({ searchTerm, onSearchChange }: ThuVienHea
               onClick={() => setActive(i)}
               className={`min-h-[48px] rounded-2xl px-8 py-3 text-sm font-black uppercase tracking-widest transition-all ${
                 active === i
-                  ? "scale-[1.02] bg-primary text-on-primary shadow-lg shadow-primary/20"
-                  : "text-on-surface-variant hover:bg-white/5 hover:text-on-surface"
+                  ? "scale-[1.02] bg-[linear-gradient(135deg,var(--primary)_0%,var(--primary-fixed-dim)_100%)] text-on-primary shadow-lg shadow-primary/20"
+                  : "ui-panel-soft text-on-surface-variant hover:text-on-surface"
               }`}
             >
               {t(`filters.${key}`)}

@@ -69,8 +69,6 @@ function protectedLink(href: string) {
   );
 }
 
-const AUTH_PROMPT_EVENT = "tuvi-auth-updated";
-
 export default function Navbar() {
   const t = useTranslations("shared");
   const pathname = usePathname();

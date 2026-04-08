@@ -42,7 +42,7 @@ const SavedChartCard = memo(function SavedChartCard({
 
   return (
     <div
-      className="glass-border-panel-soft group relative cursor-pointer rounded-xl p-4 transition-all hover:bg-white/5"
+      className="glass-border-panel-soft group relative cursor-pointer rounded-xl p-4 transition-all hover:-translate-y-0.5"
       onClick={() => onLoad(result)}
     >
       <button

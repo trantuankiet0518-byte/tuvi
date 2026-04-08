@@ -71,13 +71,13 @@ export default function ThuVienBento({ searchTerm }: ThuVienBentoProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-24">
       {featuredMatches ? (
-        <div className="md:col-span-8 group relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-transparent hover:border-primary/30 transition-all duration-500 shadow-xl shadow-background/50 backdrop-blur-xl">
+        <div className="ui-shell md:col-span-8 group relative rounded-[2.5rem] transition-all duration-500 hover:-translate-y-1">
           <div className="relative p-12 flex flex-col h-full min-h-[320px] z-10">
             <div className="flex justify-between items-start mb-16">
-              <div className="h-16 w-16 bg-primary/10 rounded-2xl flex items-center justify-center shadow-lg shadow-primary/5 group-hover:scale-110 transition-transform">
+              <div className="ui-panel-soft flex h-16 w-16 items-center justify-center rounded-2xl text-primary transition-transform group-hover:scale-110">
                 <Icon name="stars" className="text-primary text-3xl" />
               </div>
-              <span className="text-[10px] font-black tracking-[0.3em] text-primary uppercase bg-primary/5 px-4 py-2 rounded-full">
+              <span className="ui-pill rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-[0.3em] text-primary">
                 Cấp độ: Chính Tinh Vương Khải
               </span>
             </div>
@@ -90,7 +90,7 @@ export default function ThuVienBento({ searchTerm }: ThuVienBentoProps) {
               </p>
               <div className="flex gap-4">
                 {["Hành: Thổ", "Loại: Đế Tinh"].map((tag) => (
-                  <span key={tag} className="border border-white/10 bg-transparent px-5 py-2 rounded-xl text-[11px] font-black text-on-surface uppercase tracking-widest shadow-sm backdrop-blur-xl">
+                  <span key={tag} className="ui-pill rounded-xl px-5 py-2 text-[11px] font-black text-on-surface uppercase tracking-widest">
                     {tag}
                   </span>
                 ))}
@@ -105,9 +105,9 @@ export default function ThuVienBento({ searchTerm }: ThuVienBentoProps) {
       ) : null}
 
       {filteredTuHoaItems.length > 0 ? (
-        <div className="md:col-span-4 border border-white/10 bg-transparent backdrop-blur-sm rounded-[2.5rem] p-12 flex flex-col shadow-xl">
+        <div className="ui-shell md:col-span-4 flex flex-col rounded-[2.5rem] p-12">
           <h3 className="text-2xl font-black tracking-tight mb-6 flex items-center gap-4 text-on-surface uppercase">
-            <div className="w-10 h-10 rounded-xl bg-tertiary/10 flex items-center justify-center text-tertiary">
+            <div className="ui-panel-soft flex h-10 w-10 items-center justify-center rounded-xl text-tertiary">
               <Icon name="auto_awesome" className="text-2xl" />
             </div>
             Tứ Hóa
@@ -117,7 +117,7 @@ export default function ThuVienBento({ searchTerm }: ThuVienBentoProps) {
           </p>
           <div className="space-y-4 mt-auto">
             {filteredTuHoaItems.map(({ label }) => (
-              <div key={label} className="flex items-center justify-between p-5 border border-white/10 bg-transparent rounded-2xl hover:border-primary/30 hover:bg-white/5 transition-all cursor-pointer group active:scale-95 shadow-sm backdrop-blur-xl">
+              <div key={label} className="ui-panel-soft flex cursor-pointer items-center justify-between rounded-2xl p-5 transition-all group active:scale-95 hover:-translate-y-0.5">
                 <span className="text-base font-black text-on-surface uppercase tracking-wider">{label}</span>
                 <Icon name="arrow_outward" className="text-lg text-on-surface-variant group-hover:text-primary transition-colors" />
               </div>
@@ -129,8 +129,8 @@ export default function ThuVienBento({ searchTerm }: ThuVienBentoProps) {
       {filteredStarCards.length > 0 ? (
         <div className="md:col-span-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {filteredStarCards.map(({ system, name, element, desc }) => (
-            <div key={name} className="border border-white/10 bg-transparent rounded-[2rem] p-8 hover:border-primary/20 hover:-translate-y-2 transition-all duration-300 group shadow-lg shadow-background/50 flex flex-col backdrop-blur-xl">
-              <div className="text-secondary font-black text-[10px] tracking-[0.2em] uppercase mb-6 bg-secondary/5 w-fit px-3 py-1 rounded-lg">
+            <div key={name} className="ui-panel group flex flex-col rounded-[2rem] p-8 transition-all duration-300 hover:-translate-y-2">
+              <div className="ui-pill mb-6 w-fit rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-secondary">
                 {system}
               </div>
               <h4 className="text-2xl font-black mb-4 group-hover:text-primary transition-colors text-on-surface uppercase tracking-tight">
@@ -138,10 +138,10 @@ export default function ThuVienBento({ searchTerm }: ThuVienBentoProps) {
               </h4>
               <p className="text-sm text-on-surface-variant line-clamp-4 mb-8 font-medium leading-relaxed flex-1">{desc}</p>
               <div className="pt-6 border-t border-border/30 flex justify-between items-center mt-auto">
-                <span className="text-[10px] text-on-surface font-black uppercase tracking-widest border border-white/10 bg-transparent px-3 py-1 rounded-lg backdrop-blur-xl">
+                <span className="ui-pill rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest text-on-surface">
                   Hành: {element}
                 </span>
-                <button className="w-10 h-10 rounded-xl hover:bg-primary/10 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">
+                <button className="ui-panel-soft flex h-10 w-10 items-center justify-center rounded-xl text-on-surface-variant transition-colors hover:text-primary">
                   <Icon name="bookmark" className="text-xl" />
                 </button>
               </div>
@@ -149,7 +149,7 @@ export default function ThuVienBento({ searchTerm }: ThuVienBentoProps) {
           ))}
         </div>
       ) : !hasResults ? (
-        <div className="md:col-span-12 rounded-[2.5rem] border border-white/10 bg-transparent p-12 text-center shadow-xl shadow-background/50 backdrop-blur-xl">
+        <div className="ui-shell md:col-span-12 rounded-[2.5rem] p-12 text-center">
           <p className="text-2xl font-black text-on-surface uppercase tracking-tight">Không tìm thấy kết quả phù hợp</p>
           <p className="mt-4 text-sm font-medium leading-relaxed text-on-surface-variant">
             Thử tìm bằng tên sao, hệ sao, ngũ hành hoặc từ khóa ngắn hơn.

@@ -100,6 +100,11 @@ export default async function CardDetailPage({ params }: Props) {
         <Button variant="primary" icon="auto_awesome" iconPosition="left">
           {t("actions.aiReading")}
         </Button>
+        <Link href={`/views/${cardId}/vanhan`}>
+          <Button variant="secondary" icon="calendar_today">
+            {t("actions.viewVanHan") || "Xem Vận Hạn"}
+          </Button>
+        </Link>
         <Button variant="ghost" icon="share">
           {t("actions.share")}
         </Button>

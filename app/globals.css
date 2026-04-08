@@ -205,10 +205,10 @@
   --color-inverse-on-surface:       var(--inverse-on-surface);
 
   /* Typography */
-  --font-family-sans:     var(--font-outfit), sans-serif;
-  --font-family-headline: var(--font-cormorant-garamond), serif;
-  --font-family-body:     var(--font-outfit), sans-serif;
-  --font-family-label:    var(--font-outfit), sans-serif;
+  --font-family-sans:     var(--font-geist), sans-serif;
+  --font-family-headline: var(--font-geist), sans-serif;
+  --font-family-body:     var(--font-geist), sans-serif;
+  --font-family-label:    var(--font-geist), sans-serif;
 
   /* Border radius */
   --radius:     0.375rem;
@@ -228,9 +228,9 @@
 
   html {
     font-family: var(--font-family-sans);
+    scroll-behavior: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    scroll-behavior: smooth;
   }
 
   body {
@@ -289,19 +289,6 @@
     50% {
       opacity: 0.75;
       transform: scale(1.08);
-    }
-  }
-
-  @keyframes reveal-rise {
-    from {
-      opacity: 0;
-      transform: translateY(22px);
-      filter: blur(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-      filter: blur(0);
     }
   }
 
@@ -430,45 +417,10 @@
     line-height: 1.8;
   }
 
-  .reveal {
-    opacity: 0;
-    transform: translate3d(0, 28px, 0);
-    transition:
-      opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
-      transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
-    transition-delay: var(--reveal-delay, 0ms);
-    will-change: opacity, transform;
-  }
-
-  .reveal.visible {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-    will-change: auto;
-  }
-
-  .reveal.from-left {
-    transform: translate3d(-56px, 18px, 0);
-  }
-
-  .reveal.from-right {
-    transform: translate3d(56px, 18px, 0);
-  }
-
-  .reveal.scale-in {
-    transform: translate3d(0, 22px, 0) scale(0.94);
-  }
-
-  .reveal.visible.from-left,
-  .reveal.visible.from-right,
-  .reveal.visible.scale-in {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .animate-hero-rise,
     .animate-float-drift,
-    .animate-soft-pulse,
-    .reveal {
+    .animate-soft-pulse {
       animation: none !important;
       transition: none !important;
       transform: none !important;
@@ -491,7 +443,8 @@
 
   /* Glass border panel */
   .glass-border-panel {
-    background: transparent;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--surface-container-low) 68%, transparent), color-mix(in srgb, var(--surface-container-lowest) 36%, transparent));
     border: 1px solid color-mix(in srgb, var(--outline-variant) 40%, transparent);
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.03),
@@ -501,13 +454,73 @@
   }
 
   .glass-border-panel-soft {
-    background: transparent;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--surface-container-low) 42%, transparent), color-mix(in srgb, var(--surface-container-lowest) 18%, transparent));
     border: 1px solid color-mix(in srgb, var(--outline-variant) 30%, transparent);
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.025),
       0 10px 28px rgba(0, 0, 0, 0.22),
       inset 0 1px 0 rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(20px);
+  }
+
+  .ui-shell {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--outline-variant) 28%, transparent);
+    background:
+      radial-gradient(circle at top left, color-mix(in srgb, var(--primary) 12%, transparent), transparent 34%),
+      radial-gradient(circle at bottom right, color-mix(in srgb, var(--secondary) 10%, transparent), transparent 30%),
+      linear-gradient(180deg, color-mix(in srgb, var(--surface-container-low) 78%, transparent), color-mix(in srgb, var(--surface-container-lowest) 46%, transparent));
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.03),
+      0 18px 52px rgba(0, 0, 0, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(24px);
+  }
+
+  .ui-panel {
+    border: 1px solid color-mix(in srgb, var(--outline-variant) 30%, transparent);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--surface-container) 74%, transparent), color-mix(in srgb, var(--surface-container-low) 42%, transparent));
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.025),
+      0 14px 36px rgba(0, 0, 0, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(18px);
+  }
+
+  .ui-panel-soft {
+    border: 1px solid color-mix(in srgb, var(--outline-variant) 22%, transparent);
+    background: color-mix(in srgb, var(--surface-container-low) 68%, transparent);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.02),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+  }
+
+  .ui-pill {
+    border: 1px solid color-mix(in srgb, var(--outline-variant) 26%, transparent);
+    background: color-mix(in srgb, var(--surface-container-low) 76%, transparent);
+    backdrop-filter: blur(14px);
+  }
+
+  .ui-input {
+    border: 1px solid color-mix(in srgb, var(--outline-variant) 26%, transparent);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--surface-container-low) 88%, transparent), color-mix(in srgb, var(--surface-container-lowest) 56%, transparent));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 10px 24px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(14px);
+  }
+
+  .ui-input:focus {
+    border-color: color-mix(in srgb, var(--primary) 48%, var(--outline-variant));
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--primary) 12%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 10px 24px rgba(0, 0, 0, 0.08);
   }
 
   /* Button gradient */

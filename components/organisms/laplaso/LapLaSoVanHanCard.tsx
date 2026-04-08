@@ -1,9 +1,12 @@
 import type { TuViEngineResult } from "@/lib/bazi/types";
 import { getBranchLabel, getPalaceLabel, getStarLabel, QUALITY_COLORS, QUALITY_LABELS } from "@/lib/bazi/display";
 import Icon from "@/components/atoms/Icon";
+import { Link } from "@/i18n/navigation";
 
 interface Props {
   result: TuViEngineResult;
+  className?: string;
+  analysisHref?: string;
 }
 
 // Tính tuổi hiện tại từ năm sinh trong solarDateTime
@@ -19,7 +22,11 @@ function getCurrentAge(solarDateTime: string): number {
   }
 }
 
-export default function LapLaSoVanHanCard({ result }: Props) {
+export default function LapLaSoVanHanCard({
+  result,
+  className = "col-span-12 lg:col-span-4",
+  analysisHref,
+}: Props) {
   const currentAge    = getCurrentAge(result.profile.solarDateTime);
   const currentDecade = result.decadeCycles.find(
     (d) => currentAge >= d.startAge && currentAge <= d.endAge
@@ -44,7 +51,7 @@ export default function LapLaSoVanHanCard({ result }: Props) {
   ].slice(0, 4);
 
   return (
-    <div className="col-span-12 lg:col-span-4">
+    <div className={className}>
       <div className="glass-border-panel rounded-xl p-6 h-full space-y-5">
         {/* Header */}
         <div className="flex items-center gap-2">
@@ -127,6 +134,16 @@ export default function LapLaSoVanHanCard({ result }: Props) {
             {result.summary[0]}
           </p>
         )}
+
+        {analysisHref ? (
+          <Link
+            href={analysisHref}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-on-primary transition-all hover:opacity-90"
+          >
+            <Icon name="timeline" className="text-sm" />
+            Phân tích vận hạn
+          </Link>
+        ) : null}
       </div>
     </div>
   );

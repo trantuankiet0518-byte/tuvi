@@ -8,6 +8,8 @@ import LapLaSoPreview from "@/components/organisms/laplaso/LapLaSoPreview";
 import SavedChartsList from "@/components/organisms/laplaso/SavedChartsList";
 import type { FortuneRequest, TuViEngineResult } from "@/lib/bazi/types";
 import { submitFortuneRequest } from "@/lib/services/fortune";
+import { loadInitialProfile, saveProfile } from "@/lib/services/profile";
+import { saveChart } from "@/lib/services/savedCharts";
 
 const DEFAULT_FORM: FortuneRequest = {
   fullName: "",
@@ -20,7 +22,19 @@ const DEFAULT_FORM: FortuneRequest = {
 };
 
 export default function LapLaSoExperience() {
-  const [form, setForm] = useState<FortuneRequest>(DEFAULT_FORM);
+  const [form, setForm] = useState<FortuneRequest>(() => {
+    const initialProfile = loadInitialProfile();
+
+    return {
+      ...DEFAULT_FORM,
+      fullName: initialProfile.fullName || DEFAULT_FORM.fullName,
+      gender: initialProfile.gender === "nu" ? "nu" : "nam",
+      calendarType: initialProfile.calendarType || DEFAULT_FORM.calendarType,
+      birthDate: initialProfile.birthDate || DEFAULT_FORM.birthDate,
+      birthTime: initialProfile.birthTime || DEFAULT_FORM.birthTime,
+      timezone: initialProfile.timezone || DEFAULT_FORM.timezone,
+    };
+  });
   const [result, setResult] = useState<TuViEngineResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -54,6 +68,17 @@ export default function LapLaSoExperience() {
           return;
         }
 
+        saveChart(response.data);
+        await saveProfile({
+          ...loadInitialProfile(),
+          fullName: form.fullName,
+          gender: form.gender,
+          calendarType: form.calendarType,
+          birthDate: form.birthDate,
+          birthTime: form.birthTime,
+          timezone: form.timezone,
+          lunarDateTime: response.data.profile.lunarDateTime,
+        });
         setResult(response.data);
       } catch (submissionError) {
         setResult(null);
@@ -65,9 +90,19 @@ export default function LapLaSoExperience() {
   }, [canSubmit, form]);
 
   const handleReset = useCallback(() => {
+    const initialProfile = loadInitialProfile();
+
     setResult(null);
     setError(null);
-    setForm(DEFAULT_FORM);
+    setForm({
+      ...DEFAULT_FORM,
+      fullName: initialProfile.fullName || DEFAULT_FORM.fullName,
+      gender: initialProfile.gender === "nu" ? "nu" : "nam",
+      calendarType: initialProfile.calendarType || DEFAULT_FORM.calendarType,
+      birthDate: initialProfile.birthDate || DEFAULT_FORM.birthDate,
+      birthTime: initialProfile.birthTime || DEFAULT_FORM.birthTime,
+      timezone: initialProfile.timezone || DEFAULT_FORM.timezone,
+    });
   }, []);
 
   const handleLoadSaved = useCallback((saved: TuViEngineResult) => {

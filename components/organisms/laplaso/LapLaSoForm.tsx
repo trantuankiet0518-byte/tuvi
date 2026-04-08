@@ -66,7 +66,7 @@ const LapLaSoForm = memo(function LapLaSoForm({ form, isPending, onFieldChange, 
         </p>
       </header>
 
-      <form className="glass-border-panel mx-auto w-full max-w-2xl space-y-8 rounded-3xl p-10" onSubmit={handleSubmit}>
+      <form className="ui-shell mx-auto w-full max-w-2xl space-y-8 rounded-3xl p-10" onSubmit={handleSubmit}>
         <div className="space-y-3">
           <SectionLabel>{t("fullName")}</SectionLabel>
           <input
@@ -74,7 +74,7 @@ const LapLaSoForm = memo(function LapLaSoForm({ form, isPending, onFieldChange, 
             value={form.fullName}
             onChange={handleNameChange}
             placeholder={t("fullNamePlaceholder")}
-            className="w-full rounded-2xl bg-surface-container/50 px-6 py-4 text-lg font-semibold text-on-surface outline-none transition-all placeholder:text-on-surface-variant/30 focus:border-primary focus:ring-4 focus:ring-primary/10"
+            className="ui-input w-full rounded-2xl px-6 py-4 text-lg font-semibold text-on-surface outline-none transition-all placeholder:text-on-surface-variant/30"
           />
         </div>
 
@@ -99,13 +99,13 @@ const LapLaSoForm = memo(function LapLaSoForm({ form, isPending, onFieldChange, 
               type="date"
               value={form.birthDate}
               onChange={handleDateChange}
-              className="w-full rounded-2xl bg-surface-container/50 px-6 py-4 font-bold text-on-surface outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/10"
+              className="ui-input w-full rounded-2xl px-6 py-4 font-bold text-on-surface outline-none transition-all"
             />
             <input
               type="time"
               value={form.birthTime}
               onChange={handleTimeChange}
-              className="w-full rounded-2xl bg-surface-container/50 px-6 py-4 font-bold text-on-surface outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/10"
+              className="ui-input w-full rounded-2xl px-6 py-4 font-bold text-on-surface outline-none transition-all"
             />
           </div>
         </div>
@@ -116,7 +116,7 @@ const LapLaSoForm = memo(function LapLaSoForm({ form, isPending, onFieldChange, 
             <select
               value={form.timezone}
               onChange={handleTimezoneChange}
-              className="w-full cursor-pointer appearance-none rounded-2xl bg-surface-container/50 px-6 py-4 text-lg font-bold text-on-surface outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/10"
+              className="ui-input w-full cursor-pointer appearance-none rounded-2xl px-6 py-4 text-lg font-bold text-on-surface outline-none transition-all"
             >
               {timezones.map((timezone) => (
                 <option key={timezone.label} value={timezone.value}>
@@ -134,7 +134,7 @@ const LapLaSoForm = memo(function LapLaSoForm({ form, isPending, onFieldChange, 
         <button
           type="submit"
           disabled={isPending}
-          className="mt-4 w-full rounded-2xl bg-primary py-6 text-base font-black uppercase tracking-[0.2em] text-on-primary shadow-2xl shadow-primary/30 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
+          className="mt-4 w-full rounded-2xl bg-[linear-gradient(135deg,var(--primary)_0%,var(--primary-fixed-dim)_100%)] py-6 text-base font-black uppercase tracking-[0.2em] text-on-primary shadow-2xl shadow-primary/30 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
         >
           {isPending ? t("submitting") : t("submit")}
         </button>

@@ -69,6 +69,24 @@ export function writeSavedCharts(charts: SavedChart[]) {
 }
 
 export function saveChart(result: TuViEngineResult): SavedChart {
+  const existing = readSavedCharts().find(
+    (chart) =>
+      chart.result.profile.fullName === result.profile.fullName &&
+      chart.result.profile.solarDateTime === result.profile.solarDateTime
+  );
+
+  if (existing) {
+    const refreshed: SavedChart = {
+      ...existing,
+      savedAt: new Date().toISOString(),
+      result,
+    };
+
+    const next = [refreshed, ...readSavedCharts().filter((chart) => chart.id !== existing.id)].slice(0, MAX_CHARTS);
+    writeSavedCharts(next);
+    return refreshed;
+  }
+
   const entry: SavedChart = {
     id: `chart_${Date.now()}`,
     savedAt: new Date().toISOString(),

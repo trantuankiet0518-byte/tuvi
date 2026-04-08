@@ -16,28 +16,31 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 border-r border-white/10 bg-transparent min-h-screen pt-24 pb-6 flex-shrink-0 backdrop-blur-xl">
-      <nav className="px-4 space-y-2">
-        {sidebarItems.map(({ href, icon, labelKey }) => {
-          const isActive = pathname === href || pathname.startsWith(href + "/");
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={`
-                flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 min-h-[48px]
-                ${isActive
-                  ? "bg-primary text-on-primary shadow-md shadow-primary/10"
-                  : "text-on-surface-variant hover:bg-white/5 hover:text-on-surface"
-                }
-              `}
-              >
-              <Icon name={icon} className="text-[1.4rem]" />
-              {t(labelKey)}
-            </Link>
-          );
-        })}
-      </nav>
+    <aside className="min-h-screen w-64 flex-shrink-0 px-3 pb-6 pt-24">
+      <div className="ui-shell sticky top-24 rounded-[2rem] px-3 py-4">
+        <nav className="space-y-2">
+          {sidebarItems.map(({ href, icon, labelKey }) => {
+            const isActive = pathname === href || pathname.startsWith(href + "/");
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`
+                  min-h-[48px] rounded-[1.2rem] px-4 py-3 text-sm font-semibold transition-all duration-200
+                  flex items-center gap-3
+                  ${isActive
+                    ? "bg-[linear-gradient(135deg,var(--primary)_0%,var(--primary-fixed-dim)_100%)] text-on-primary shadow-[0_14px_30px_rgba(196,122,0,0.22)]"
+                    : "ui-panel-soft text-on-surface-variant hover:-translate-y-0.5 hover:text-on-surface"
+                  }
+                `}
+                >
+                <Icon name={icon} className="text-[1.4rem]" />
+                {t(labelKey)}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
     </aside>
   );
 }

@@ -70,39 +70,44 @@ export default function RegisterForm() {
                 <input
                   autoComplete="name"
                   aria-label={t("fullName")}
-                  className="h-full w-full bg-transparent text-[0.98rem] text-[#f4efe7] placeholder:text-[#5a544d] focus:outline-none"
+                  className="h-full w-full bg-transparent text-[0.98rem] text-[#f4efe7] :text-[#5a544d] focus:outline-none"
                   name="fullName"
-                  placeholder={t("fullNamePlaceholder")}
                   type="text"
                 />
               </div>
             </label>
             <label className="space-y-2">
               <div className={fieldShell}>
-                <Mail className="h-4 w-4 shrink-0 text-[#7d766f]" aria-hidden="true" />
+                <Mail
+                  className="h-4 w-4 shrink-0 text-[#7d766f]"
+                  aria-hidden="true"
+                />
                 <input
                   autoComplete="email"
                   aria-label={t("email")}
-                  className="h-full w-full bg-transparent text-[0.98rem] text-[#f4efe7] placeholder:text-[#5a544d] focus:outline-none"
+                  className="h-full w-full bg-transparent text-[0.98rem] text-[#f4efe7] :text-[#5a544d] focus:outline-none"
                   name="email"
-                  placeholder={t("emailPlaceholder")}
                   type="email"
                 />
               </div>
             </label>
             <label className="space-y-2">
               <div className={fieldShell}>
-                <LockKeyhole className="h-4 w-4 shrink-0 text-[#7d766f]" aria-hidden="true" />
+                <LockKeyhole
+                  className="h-4 w-4 shrink-0 text-[#7d766f]"
+                  aria-hidden="true"
+                />
                 <input
                   autoComplete="new-password"
                   aria-label={t("password")}
-                  className="h-full w-full bg-transparent text-[0.98rem] text-[#f4efe7] placeholder:text-[#5a544d] focus:outline-none"
+                  className="h-full w-full bg-transparent text-[0.98rem] text-[#f4efe7] :text-[#5a544d] focus:outline-none"
                   name="password"
-                  placeholder={t("passwordPlaceholder")}
                   type={showPassword ? "text" : "password"}
                 />
                 <button
-                  aria-label={showPassword ? t("hidePassword") : t("showPassword")}
+                  aria-label={
+                    showPassword ? t("hidePassword") : t("showPassword")
+                  }
                   className="shrink-0 rounded-full p-1.5 text-[#7d766f] transition hover:bg-white/5 hover:text-[#f4efe7]"
                   type="button"
                   onClick={() => setShowPassword((value) => !value)}
@@ -125,14 +130,14 @@ export default function RegisterForm() {
                 className="mt-1 h-4 w-4 rounded border-[#4a4238] bg-transparent text-[#ffbe6a] focus:ring-[#ffbe6a]/30"
               />
               <span className="text-[0.82rem] leading-6 text-[#a59f98]">
-                {t("agreePrefix")} {" "}
+                {t("agreePrefix")}{" "}
                 <Link
                   href="#"
                   className="font-medium text-[#f4efe7] hover:text-[#ffbe6a] hover:underline"
                 >
                   {t("terms")}
                 </Link>{" "}
-                {t("and")} {" "}
+                {t("and")}{" "}
                 <Link
                   href="#"
                   className="font-medium text-[#f4efe7] hover:text-[#ffbe6a] hover:underline"
@@ -150,12 +155,17 @@ export default function RegisterForm() {
               {t("submit")}
             </button>
 
-            {submitError ? <p className="text-sm font-medium text-red-300">{submitError}</p> : null}
+            {submitError ? (
+              <p className="text-sm font-medium text-red-300">{submitError}</p>
+            ) : null}
           </form>
 
           <div className="mt-6 flex items-center justify-center gap-2 text-sm text-[#a59f98]">
             <span>{t("haveAccount")}</span>
-            <Link href="/login" className="font-semibold text-[#ffbe6a] transition hover:underline">
+            <Link
+              href="/login"
+              className="font-semibold text-[#ffbe6a] transition hover:underline"
+            >
               {t("signIn")}
             </Link>
           </div>

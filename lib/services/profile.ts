@@ -8,15 +8,20 @@ import {
 const PROFILE_STORAGE_KEY = "tuvi_profile_settings";
 export const PROFILE_UPDATED_EVENT = "tuvi-profile-updated";
 
-function readJson<T>(key: string): T | null {
-  if (typeof window === "undefined") return null;
-
-  try {
-    const raw = window.localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : null;
-  } catch {
-    return null;
+function parseSolarDateTime(solarDateTime?: string) {
+  if (!solarDateTime) {
+    return {
+      birthDate: "",
+      birthTime: "12:00",
+    };
   }
+
+  const [birthDate = "", birthTimeRaw = "12:00"] = solarDateTime.split(/[T ]/);
+
+  return {
+    birthDate,
+    birthTime: birthTimeRaw.slice(0, 5) || "12:00",
+  };
 }
 
 function writeJson<T>(key: string, value: T) {
@@ -43,6 +48,12 @@ const DEFAULT_PROFILE: ProfileSettingsDraft = {
 let cachedProfile: ProfileSettingsDraft = DEFAULT_PROFILE;
 let cachedProfileStorageRaw = "";
 
+function mapGenderLabelToDraftValue(genderLabel?: string): ProfileSettingsDraft["gender"] {
+  if (genderLabel === "Nữ") return "nu";
+  if (genderLabel === "Khác") return "khac";
+  return "nam";
+}
+
 function syncProfileCache(): ProfileSettingsDraft {
   if (typeof window === "undefined") return DEFAULT_PROFILE;
 
@@ -61,20 +72,20 @@ function syncProfileCache(): ProfileSettingsDraft {
   } catch {
     saved = null;
   }
+
   const latest: Partial<ProfileSettingsDraft> | null = latestProfile
-    ? {
-        fullName: latestProfile.fullName ?? "",
-        gender:
-          latestProfile.genderLabel === "Nữ"
-            ? "nu"
-            : latestProfile.genderLabel === "Khác"
-              ? "khac"
-              : "nam",
-        birthDate: latestProfile.solarDateTime?.split("T")[0] ?? "",
-        birthTime: latestProfile.solarDateTime?.split("T")[1]?.slice(0, 5) ?? "12:00",
-        timezone: latestProfile.timezone ?? "+07:00",
-        lunarDateTime: latestProfile.lunarDateTime ?? "",
-      }
+    ? (() => {
+        const { birthDate, birthTime } = parseSolarDateTime(latestProfile.solarDateTime);
+
+        return {
+          fullName: latestProfile.fullName ?? "",
+          gender: mapGenderLabelToDraftValue(latestProfile.genderLabel),
+          birthDate,
+          birthTime,
+          timezone: latestProfile.timezone ?? "+07:00",
+          lunarDateTime: latestProfile.lunarDateTime ?? "",
+        };
+      })()
     : null;
 
   cachedProfile = {
@@ -96,23 +107,32 @@ export function readLatestSavedChart(): Partial<ProfileSettingsDraft> | null {
 
   if (!profile) return null;
 
+  const { birthDate, birthTime } = parseSolarDateTime(profile.solarDateTime);
+
   return {
     fullName: profile.fullName ?? "",
-    gender:
-      profile.genderLabel === "Nữ"
-        ? "nu"
-        : profile.genderLabel === "Khác"
-          ? "khac"
-          : "nam",
-    birthDate: profile.solarDateTime?.split("T")[0] ?? "",
-    birthTime: profile.solarDateTime?.split("T")[1]?.slice(0, 5) ?? "12:00",
+    gender: mapGenderLabelToDraftValue(profile.genderLabel),
+    birthDate,
+    birthTime,
     timezone: profile.timezone ?? "+07:00",
     lunarDateTime: profile.lunarDateTime ?? "",
   };
 }
 
 export async function saveProfile(profile: ProfileSettingsDraft): Promise<ApiResult<ProfileSettingsDraft>> {
-  if (!profile.fullName.trim() && !profile.email.trim() && !profile.phone.trim()) {
+  const hasAnyProfileData = Boolean(
+    profile.fullName.trim() ||
+      profile.email.trim() ||
+      profile.phone.trim() ||
+      profile.birthDate.trim() ||
+      profile.birthTime.trim() ||
+      profile.timezone.trim() ||
+      profile.birthPlace.trim() ||
+      profile.lunarDateTime.trim() ||
+      profile.notes.trim()
+  );
+
+  if (!hasAnyProfileData) {
     return failure("validation_error", "Ít nhất một trường hồ sơ cần có dữ liệu.");
   }
 
